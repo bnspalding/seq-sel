@@ -7,4 +7,4 @@ dependencies:
   - optparse-applicative
 
 executable:
-  main: main.hs
+  main: src/main.hs
