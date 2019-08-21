@@ -4,6 +4,7 @@ import Data.Semigroup ((<>))
 import Options.Applicative
 
 data Opts = Opts {
+    optInput :: !String,
     optFunc :: !String,
     optLines :: !Int,
     optRhyme :: !String,
@@ -14,7 +15,8 @@ data Opts = Opts {
 main :: IO ()
 main = do
     opts <- execParser optsParser
-    putStrLn $ "sequence-selection" ++ optFunc opts
+    putStrLn $ "sequence-selection on word: " ++ optInput opts
+        ++ " func: " ++ optFunc opts
 
 optsParser :: ParserInfo Opts
 optsParser = info 
@@ -27,7 +29,10 @@ versionOption = infoOption "0.0" (long "version" <> help "Show version")
 
 programOptions :: Parser Opts
 programOptions = Opts 
-    <$> strOption 
+    <$> argument str
+         ( metavar "WORD"
+        <> help "provide an input word for poetry generation")
+    <*> strOption 
          ( long "func"
         <> short 'f'  
         <> metavar "FUNC" 
