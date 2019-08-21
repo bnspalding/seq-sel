@@ -1,5 +1,7 @@
 name: seq-sel
 version: 0.0
+author: bnspalding
+copyright: 2019 Ben Spalding
 synopsis: project description for seq-sel
 
 dependencies:

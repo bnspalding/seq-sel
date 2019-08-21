@@ -4,11 +4,14 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 888df228899111b26c5f48f133ddbc3a047153da930a58dfbceab718344d2add
+-- hash: 1cbdb4206379e224d7fcff3b186c1f7ab9228afe8a4c92080de6d1c00245efef
 
 name:           seq-sel
 version:        0.0
 synopsis:       project description for seq-sel
+author:         bnspalding
+maintainer:     bnspalding
+copyright:      2019 Ben Spalding
 build-type:     Simple
 
 executable seq-sel
