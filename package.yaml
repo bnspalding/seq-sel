@@ -8,3 +8,5 @@ dependencies:
 
 executable:
   main: src/main.hs
+
+default-extensions: []
