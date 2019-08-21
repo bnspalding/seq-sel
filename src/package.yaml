@@ -1,0 +1,10 @@
+name: seq-sel
+version: 0.0
+synopsis: project description for seq-sel
+
+dependencies:
+  - base >= 4.9 && < 5
+  - optparse-applicative
+
+executable:
+  main: main.hs

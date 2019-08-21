@@ -1,0 +1,21 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1c3f064f46ded866ca21bd6acf1f5f81f8d3dceeef87e2e84f1aa5af4e23f25b
+
+name:           seq-sel
+version:        0.0
+synopsis:       project description for seq-sel
+build-type:     Simple
+
+executable seq-sel
+  main-is: main.hs
+  other-modules:
+      Paths_seq_sel
+  build-depends:
+      base >=4.9 && <5
+    , optparse-applicative
+  default-language: Haskell2010
