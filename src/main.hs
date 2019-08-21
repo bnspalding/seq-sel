@@ -6,8 +6,6 @@ import Data.Semigroup ((<>))
 import Options.Applicative
 import qualified Data.Yaml as Y
 
-type StartWord = String
-
 data Opts = Opts {
     optFunc :: !String,
     optLines :: !Int,
@@ -19,7 +17,7 @@ data OptionType
     = FromFile   FilePath
     | FromFlags  Opts
 
-data Input = Input StartWord OptionType
+data Input = Input String OptionType
 
 -- Main Execution ---------------------------------
 
@@ -30,7 +28,7 @@ main = do
         FromFile filename -> run word =<< readConfig filename
         FromFlags opts -> run word opts    
 
-run :: StartWord -> Opts -> IO ()
+run :: String -> Opts -> IO ()
 run word opts = putStrLn $ "sequence-selection on word: " ++ word
         ++ " func: " ++ optFunc opts
         -- TODO: replace this with a call to gen
@@ -46,7 +44,7 @@ optsParser = info
 versionOption :: Parser (a -> a)
 versionOption = infoOption "0.0" (long "version" <> help "Show version")
 
-parseWord :: Parser StartWord
+parseWord :: Parser String
 parseWord = argument str
     ( metavar "WORD"
     <> help "provide an input word for poetry generation")
