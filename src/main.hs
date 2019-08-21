@@ -30,30 +30,30 @@ versionOption = infoOption "0.0" (long "version" <> help "Show version")
 programOptions :: Parser Opts
 programOptions = Opts 
     <$> strOption 
-            ( long "func"
+         ( long "func"
         <> short 'f'  
         <> metavar "FUNC" 
         <> help "specify the sequence function")
     <*> option auto
-            ( long "lines" 
+         ( long "lines" 
         <> short 'l' 
         <> metavar "LINES" 
         <> value 4 
         <> help "specify the number of lines to generate") 
     <*> strOption
-            ( long "rhyme" 
+         ( long "rhyme" 
         <> short 'r' 
         <> metavar "SCHEME" 
         <> value "abab" 
         <> help "specify the rhyme scheme")
     <*> strOption
-            ( long "meter" 
+         ( long "meter" 
         <> short 'm' 
         <> metavar "SCHEME" 
         <> value "01010101/010101" 
         <> help "specify the meter")
     <*> strOption
-            ( long "config"
+         ( long "config"
         <> short 'c' 
         <> metavar "FILENAME.yaml"
         <> value "none" 
