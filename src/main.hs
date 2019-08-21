@@ -16,10 +16,35 @@ data Opts = Opts {
 } deriving Show
 
 data OptionType
-    = FromFile      FilePath
-    | FromStdInput  Opts
+    = FromFile   FilePath
+    | FromFlags  Opts
 
 data Input = Input StartWord OptionType
+
+-- Main Execution ---------------------------------
+
+main :: IO ()
+main = do 
+    (Input word optType) <- execParser optsParser
+    case optType of
+        FromFile filename -> run word =<< readConfig filename
+        FromFlags opts -> run word opts    
+
+run :: StartWord -> Opts -> IO ()
+run word opts = putStrLn $ "sequence-selection on word: " ++ word
+        ++ " func: " ++ optFunc opts
+        -- TODO: replace this with a call to gen
+
+-- Flag Parser info -----------------------------------        
+
+optsParser :: ParserInfo Input
+optsParser = info 
+    (helper <*> versionOption <*> input)
+    (  fullDesc 
+    <> header "Sequence, Selection - program description")
+
+versionOption :: Parser (a -> a)
+versionOption = infoOption "0.0" (long "version" <> help "Show version")
 
 parseWord :: Parser StartWord
 parseWord = argument str
@@ -57,26 +82,16 @@ parseFile = FromFile
     <$> strOption
         ( long "config"
         <> short 'c' 
-        <> metavar "FILENAME.yaml"
-        <> value "none" 
+        <> metavar "FILENAME"
         <> help "specify options as a .yaml config file")
 
-parseStdInput :: Parser OptionType
-parseStdInput = FromStdInput <$> parseOpts
+parseFlags :: Parser OptionType
+parseFlags = FromFlags <$> parseOpts
 
 input :: Parser Input
-input = Input <$> parseWord <*> (parseFile <|> parseStdInput)
+input = Input <$> parseWord <*> (parseFile <|> parseFlags)
 
-main :: IO ()
-main = do 
-    (Input word optType) <- execParser optsParser
-    case optType of
-        FromFile filename -> run word =<< readConfig filename
-        FromStdInput opts -> run word opts    
-
-run :: StartWord -> Opts -> IO ()
-run word opts = putStrLn $ "sequence-selection on word: " ++ word
-        ++ " func: " ++ optFunc opts
+-- Read config.yaml file ---------------------------------
 
 instance Y.FromJSON Opts where
     parseJSON (Y.Object m) = Opts <$>
@@ -90,12 +105,3 @@ readConfig :: String -> IO Opts
 readConfig filename = 
     either (error . show) id <$>
     Y.decodeFileEither filename
-    
-optsParser :: ParserInfo Input
-optsParser = info 
-    (helper <*> versionOption <*> input)
-    (  fullDesc 
-    <> header "Sequence, Selection - program description")
-
-versionOption :: Parser (a -> a)
-versionOption = infoOption "0.0" (long "version" <> help "Show version")
