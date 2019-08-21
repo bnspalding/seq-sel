@@ -15,14 +15,12 @@ main :: IO ()
 main = do
     opts <- execParser optsParser
     putStrLn $ "sequence-selection" ++ optFunc opts
-    where
-        optsParser :: ParserInfo Opts
-        optsParser = 
-            info 
-                (helper <*> versionOption <*> programOptions)
-                (fullDesc <> progDesc "Sequence, Selection" <>
-                header "Sequence, Selection - program description")
 
+optsParser :: ParserInfo Opts
+optsParser = info 
+    (helper <*> versionOption <*> programOptions)
+    (  fullDesc 
+    <> header "Sequence, Selection - program description")
 
 versionOption :: Parser (a -> a)
 versionOption = infoOption "0.0" (long "version" <> help "Show version")
