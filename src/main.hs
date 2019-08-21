@@ -1,38 +1,34 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import Data.Semigroup ((<>))
 import Options.Applicative
+import qualified Data.Yaml as Y
+
+type StartWord = String
 
 data Opts = Opts {
-    optInput :: !String,
     optFunc :: !String,
     optLines :: !Int,
     optRhyme :: !String,
-    optMeter :: !String,
-    optConfig :: !String
-}
+    optMeter :: !String
+} deriving Show
 
-main :: IO ()
-main = do
-    opts <- execParser optsParser
-    putStrLn $ "sequence-selection on word: " ++ optInput opts
-        ++ " func: " ++ optFunc opts
+data OptionType
+    = FromFile      FilePath
+    | FromStdInput  Opts
 
-optsParser :: ParserInfo Opts
-optsParser = info 
-    (helper <*> versionOption <*> programOptions)
-    (  fullDesc 
-    <> header "Sequence, Selection - program description")
+data Input = Input StartWord OptionType
 
-versionOption :: Parser (a -> a)
-versionOption = infoOption "0.0" (long "version" <> help "Show version")
+parseWord :: Parser StartWord
+parseWord = argument str
+    ( metavar "WORD"
+    <> help "provide an input word for poetry generation")
 
-programOptions :: Parser Opts
-programOptions = Opts 
-    <$> argument str
-         ( metavar "WORD"
-        <> help "provide an input word for poetry generation")
-    <*> strOption 
+parseOpts :: Parser Opts
+parseOpts = Opts
+    <$> strOption 
          ( long "func"
         <> short 'f'  
         <> metavar "FUNC" 
@@ -55,9 +51,51 @@ programOptions = Opts
         <> metavar "SCHEME" 
         <> value "01010101/010101" 
         <> help "specify the meter")
-    <*> strOption
-         ( long "config"
+
+parseFile :: Parser OptionType
+parseFile = FromFile
+    <$> strOption
+        ( long "config"
         <> short 'c' 
         <> metavar "FILENAME.yaml"
         <> value "none" 
         <> help "specify options as a .yaml config file")
+
+parseStdInput :: Parser OptionType
+parseStdInput = FromStdInput <$> parseOpts
+
+input :: Parser Input
+input = Input <$> parseWord <*> (parseFile <|> parseStdInput)
+
+main :: IO ()
+main = do 
+    (Input word optType) <- execParser optsParser
+    case optType of
+        FromFile filename -> run word =<< readConfig filename
+        FromStdInput opts -> run word opts    
+
+run :: StartWord -> Opts -> IO ()
+run word opts = putStrLn $ "sequence-selection on word: " ++ word
+        ++ " func: " ++ optFunc opts
+
+instance Y.FromJSON Opts where
+    parseJSON (Y.Object m) = Opts <$>
+        m Y..: "func" <*>
+        m Y..: "lines" <*>
+        m Y..: "rhyme" <*>
+        m Y..: "meter"
+    parseJSON _ = fail "Expected Object for Config value"
+
+readConfig :: String -> IO Opts
+readConfig filename = 
+    either (error . show) id <$>
+    Y.decodeFileEither filename
+    
+optsParser :: ParserInfo Input
+optsParser = info 
+    (helper <*> versionOption <*> input)
+    (  fullDesc 
+    <> header "Sequence, Selection - program description")
+
+versionOption :: Parser (a -> a)
+versionOption = infoOption "0.0" (long "version" <> help "Show version")

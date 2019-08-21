@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1cbdb4206379e224d7fcff3b186c1f7ab9228afe8a4c92080de6d1c00245efef
+-- hash: c827dc3cadef800bef118b42309475e0b3dad9c79cd252e62cf11843c3d39309
 
 name:           seq-sel
 version:        0.0
@@ -21,4 +21,5 @@ executable seq-sel
   build-depends:
       base >=4.9 && <5
     , optparse-applicative
+    , yaml
   default-language: Haskell2010

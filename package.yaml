@@ -7,6 +7,7 @@ synopsis: project description for seq-sel
 dependencies:
   - base >= 4.9 && < 5
   - optparse-applicative
+  - yaml
 
 executable:
   main: src/Main.hs
