@@ -37,17 +37,31 @@ run word opts = putStrLn $ "sequence-selection on word: " ++ word
 
 optsParser :: ParserInfo Input
 optsParser = info 
-    (helper <*> versionOption <*> input)
+    (helper <*> versionOption <*> parseInput)
     (  fullDesc 
     <> header "Sequence, Selection - program description")
 
 versionOption :: Parser (a -> a)
 versionOption = infoOption "0.0" (long "version" <> help "Show version")
 
+parseInput :: Parser Input
+parseInput = Input <$> parseWord <*> (parseFile <|> parseFlags)
+
 parseWord :: Parser String
 parseWord = argument str
     ( metavar "WORD"
     <> help "provide an input word for poetry generation")
+
+parseFile :: Parser OptionType
+parseFile = FromFile
+    <$> strOption
+        ( long "config"
+        <> short 'c' 
+        <> metavar "FILENAME"
+        <> help "specify options as a .yaml config file")
+
+parseFlags :: Parser OptionType
+parseFlags = FromFlags <$> parseOpts
 
 parseOpts :: Parser Opts
 parseOpts = Opts
@@ -74,20 +88,6 @@ parseOpts = Opts
         <> metavar "SCHEME" 
         <> value "01010101/010101" 
         <> help "specify the meter")
-
-parseFile :: Parser OptionType
-parseFile = FromFile
-    <$> strOption
-        ( long "config"
-        <> short 'c' 
-        <> metavar "FILENAME"
-        <> help "specify options as a .yaml config file")
-
-parseFlags :: Parser OptionType
-parseFlags = FromFlags <$> parseOpts
-
-input :: Parser Input
-input = Input <$> parseWord <*> (parseFile <|> parseFlags)
 
 -- Read config.yaml file ---------------------------------
 
