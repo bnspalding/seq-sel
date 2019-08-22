@@ -5,6 +5,7 @@ module Main where
 import Data.Semigroup ((<>))
 import Options.Applicative
 import qualified Data.Yaml as Y
+import Gen
 
 data Opts = Opts {
     optFunc :: !String,
