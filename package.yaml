@@ -1,15 +1,28 @@
 name: seq-sel
 version: 0.0
-author: bnspalding
-copyright: 2019 Ben Spalding
-synopsis: project description for seq-sel
+github: "bnspalding/seq-sel"
+author: "bnspalding"
+copyright: "Copyright (c) 2019 Ben Spalding"
+synopsis: "project description for seq-sel"
+
+description: Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 
 dependencies:
   - base >= 4.9 && < 5
   - optparse-applicative
   - yaml
 
-executable:
-  main: src/Main.hs
+library:
+  source-dirs: src
+
+executables:
+  seq-sel:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      []
+      # - -Werror
+    dependencies:
+      - seq-sel
 
 default-extensions: []

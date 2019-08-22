@@ -11,6 +11,6 @@ packages:
   - .
 
 ghc-options:
-  "$locals": -Wall -Werror -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  "$locals": -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
 
 rebuild-ghc-options: true

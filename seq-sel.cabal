@@ -4,22 +4,45 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c827dc3cadef800bef118b42309475e0b3dad9c79cd252e62cf11843c3d39309
+-- hash: 1b7a93217bdbc58675503fd6a48d897814611bb6cb55ad51e036274e1c577180
 
 name:           seq-sel
 version:        0.0
 synopsis:       project description for seq-sel
+description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
+homepage:       https://github.com/bnspalding/seq-sel#readme
+bug-reports:    https://github.com/bnspalding/seq-sel/issues
 author:         bnspalding
 maintainer:     bnspalding
-copyright:      2019 Ben Spalding
+copyright:      Copyright (c) 2019 Ben Spalding
 build-type:     Simple
 
-executable seq-sel
-  main-is: src/Main.hs
+source-repository head
+  type: git
+  location: https://github.com/bnspalding/seq-sel
+
+library
+  exposed-modules:
+      Gen
   other-modules:
       Paths_seq_sel
+  hs-source-dirs:
+      src
   build-depends:
       base >=4.9 && <5
     , optparse-applicative
+    , yaml
+  default-language: Haskell2010
+
+executable seq-sel
+  main-is: Main.hs
+  other-modules:
+      Paths_seq_sel
+  hs-source-dirs:
+      app
+  build-depends:
+      base >=4.9 && <5
+    , optparse-applicative
+    , seq-sel
     , yaml
   default-language: Haskell2010

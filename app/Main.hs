@@ -30,8 +30,8 @@ main = do
         FromFlags opts -> run word opts    
 
 run :: String -> Opts -> IO ()
-run word opts = putStrLn $ "sequence-selection on word: " ++ word
-        ++ " func: " ++ optFunc opts
+run word opts = putStrLn $ writePoem (
+    poem (makeSpec opts) (getSeqFunc (optFunc opts)) word)
         -- TODO: replace this with a call to gen
 
 -- Flag Parser info -----------------------------------        
@@ -104,3 +104,13 @@ readConfig :: String -> IO Opts
 readConfig filename = 
     either (error . show) id <$>
     Y.decodeFileEither filename
+
+-- Select the Sequence Function from a given string ------
+
+getSeqFunc :: String -> Seq
+getSeqFunc "dict" = Dict
+getSeqFunc "vec"  = Vector
+getSeqFunc _      = error "unknown sequence function"
+
+makeSpec :: Opts -> Spec
+makeSpec opts = undefined
