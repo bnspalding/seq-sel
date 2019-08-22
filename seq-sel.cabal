@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1b7a93217bdbc58675503fd6a48d897814611bb6cb55ad51e036274e1c577180
+-- hash: d71039c55e5cca54c5602e03a4f842a87b293d16bf4444be9d6abcaa9a337862
 
 name:           seq-sel
 version:        0.0
@@ -23,13 +23,17 @@ source-repository head
 
 library
   exposed-modules:
+      Constraints
       Gen
+      Sound
+      Sound.Syl
   other-modules:
       Paths_seq_sel
   hs-source-dirs:
       src
   build-depends:
       base >=4.9 && <5
+    , containers
     , optparse-applicative
     , yaml
   default-language: Haskell2010
@@ -42,6 +46,7 @@ executable seq-sel
       app
   build-depends:
       base >=4.9 && <5
+    , containers
     , optparse-applicative
     , seq-sel
     , yaml
