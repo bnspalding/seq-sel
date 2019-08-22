@@ -2,14 +2,16 @@ module Gen
 ( poem,
   writePoem,
   Spec (..),
-  Seq (..)
+  Seq (..),
+  PoemWord (..)
 ) where
 
+data PoemWord = PoemWord
 data Spec = Spec
 data Seq = Dict | Vector
 
-poem :: Spec -> Seq -> String -> [Word]
+poem :: Spec -> Seq -> [PoemWord] -> [PoemWord]
 poem spec seq w = undefined
 
-writePoem :: [Word] -> String
+writePoem :: [PoemWord] -> String
 writePoem ws = undefined
