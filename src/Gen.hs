@@ -3,23 +3,23 @@ module Gen
   writePoem,
   Spec (..),
   Seq (..),
-  PoemWord (..)
+  Term (..)
 ) where
 
 import Constraints
 import Sound
 import qualified Data.Map as Map
 
-data PoemWord = PoemWord
+data Term = Term
 data Spec = Spec {
     specConstraints :: [[[[Constraint]]]], -- stanza [ line [ syl [Constraint]]]
-    wordsUsed :: [PoemWord],
+    wordsUsed :: [Term],
     rhymeMap :: Map.Map Char Sound
 }
 data Seq = Dict | Vector
 
-poem :: Spec -> Seq -> [PoemWord] -> [PoemWord]
+poem :: Spec -> Seq -> [Term] -> [Term]
 poem spec seq w = undefined
 
-writePoem :: [PoemWord] -> String
+writePoem :: [Term] -> String
 writePoem ws = undefined

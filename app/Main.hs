@@ -33,7 +33,7 @@ run :: String -> Opts -> IO ()
 run word opts = putStrLn $ writePoem ( poem 
         (makeSpec opts) 
         (getSeqFunc (optFunc opts)) 
-        [getPoemWord word])
+        [getTerm word])
 
 -- Flag Parser info -----------------------------------        
 
@@ -116,5 +116,5 @@ getSeqFunc _      = error "unknown sequence function"
 makeSpec :: Opts -> Spec
 makeSpec opts = undefined
 
-getPoemWord :: String -> PoemWord
-getPoemWord = undefined
+getTerm :: String -> Term
+getTerm = undefined
