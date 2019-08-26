@@ -11,6 +11,7 @@ packages:
   - src
   - src/Sound
   - src/Gen
+  - src/Filter
 
 ghc-options:
   "$locals": -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints

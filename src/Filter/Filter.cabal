@@ -1,0 +1,25 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1c6aa5c81466ca5cb357eb19f9510b92132de5ea5206713bb39925169ca7ccd5
+
+name:           Filter
+version:        0.0
+synopsis:       project description for seq-sel/filter
+description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
+author:         bnspalding
+maintainer:     bnspalding
+copyright:      Copyright (c) 2019 Ben Spalding
+build-type:     Simple
+
+library
+  other-modules:
+      Paths_Filter
+  hs-source-dirs:
+      ./.
+  build-depends:
+      base >=4.9 && <5
+  default-language: Haskell2010
