@@ -1,0 +1,25 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: fa345d989d909667282eace1f9d11d9154c74d7e3787a0846635b7925434f818
+
+name:           Dictionary
+version:        0.0
+synopsis:       project description for seq-sel/dictionary
+description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
+author:         bnspalding
+maintainer:     bnspalding
+copyright:      Copyright (c) 2019 Ben Spalding
+build-type:     Simple
+
+library
+  other-modules:
+      Paths_Dictionary
+  hs-source-dirs:
+      ./.
+  build-depends:
+      base >=4.9 && <5
+  default-language: Haskell2010
