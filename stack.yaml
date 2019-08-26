@@ -8,9 +8,12 @@
 resolver: lts-14.1
 
 packages:
-  - .
+  - src
+  - src/Sound
+  - src/Gen
 
 ghc-options:
   "$locals": -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
 
 rebuild-ghc-options: true
+

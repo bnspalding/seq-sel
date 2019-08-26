@@ -11,19 +11,10 @@ dependencies:
   - base >= 4.9 && < 5
   - optparse-applicative
   - yaml
-  - containers
-
-library:
-  source-dirs: src
+  - Gen
 
 executables:
   seq-sel:
     main: Main.hs
-    source-dirs: app
-    ghc-options:
-      []
-      # - -Werror
-    dependencies:
-      - seq-sel
 
 default-extensions: []

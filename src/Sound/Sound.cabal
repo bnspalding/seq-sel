@@ -1,0 +1,28 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: dd9920575c07d805f0f1d9d676153db64093c13fbde9dd18c2529bbc53ac7dc1
+
+name:           Sound
+version:        0.0
+synopsis:       project description for seq-sel/sound
+description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
+author:         bnspalding
+maintainer:     bnspalding
+copyright:      Copyright (c) 2019 Ben Spalding
+build-type:     Simple
+
+library
+  exposed-modules:
+      Sound
+      Syl
+  other-modules:
+      Paths_Sound
+  hs-source-dirs:
+      ./.
+  build-depends:
+      base >=4.9 && <5
+  default-language: Haskell2010

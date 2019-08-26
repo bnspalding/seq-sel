@@ -1,4 +1,4 @@
-module Sound.Syl where
+module Syl where
 
 data Syl =
   Syl

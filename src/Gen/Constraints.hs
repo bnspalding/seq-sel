@@ -1,6 +1,6 @@
 module Constraints where
 
-import Sound.Syl
+import Syl
 
 newtype Constraint =
   Constraint (Syl -> Bool)
