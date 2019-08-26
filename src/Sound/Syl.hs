@@ -1,3 +1,4 @@
 module Sound.Syl where
 
-data Syl = Syl
+data Syl =
+  Syl

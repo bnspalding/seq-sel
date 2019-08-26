@@ -1,3 +1,4 @@
 module Sound where
 
-data Sound = Sound
+data Sound =
+  Sound
