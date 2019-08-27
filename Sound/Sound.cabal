@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5700ae676bd7381896b4274c08c7e7e848b6224bafe10c53fba200af42a53fc6
+-- hash: 4b29b8aab126c15b2b19836b2091fea66cf373898936b0d9c900d3a9c7efeab3
 
 name:           Sound
 version:        0.0
@@ -19,6 +19,7 @@ build-type:     Simple
 
 library
   exposed-modules:
+      Feature
       Sound
       Syl
   other-modules:
@@ -27,4 +28,5 @@ library
       src
   build-depends:
       base >=4.9 && <5
+    , containers
   default-language: Haskell2010
