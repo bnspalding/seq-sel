@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d594e47f9e6074fd3d0b4a1f0e4441b3b209e622fd11d1497aefba863443f43
+-- hash: 6ec0936194ecac470595612808e385a530f7562c8b3ed38d965b3adc453d7148
 
 name:           seq-sel
 version:        0.0
@@ -28,6 +28,22 @@ executable seq-sel
   build-depends:
       Gen
     , base >=4.9 && <5
+    , optparse-applicative
+    , yaml
+  default-language: Haskell2010
+
+test-suite seq-sel-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_seq_sel
+  hs-source-dirs:
+      ../test
+  build-depends:
+      Gen
+    , base >=4.9 && <5
+    , hspec
+    , hspec-discover
     , optparse-applicative
     , yaml
   default-language: Haskell2010

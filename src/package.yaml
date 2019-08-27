@@ -17,4 +17,12 @@ executables:
   seq-sel:
     main: Main.hs
 
+tests:
+  seq-sel-test:
+    main: Spec.hs
+    source-dirs: ../test
+    dependencies:
+      - hspec
+      - hspec-discover
+
 default-extensions: []
