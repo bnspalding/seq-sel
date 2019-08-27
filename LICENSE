@@ -1,0 +1,14 @@
+Copyright 2019 Ben Spalding (bnspalding.com)
+
+Sequence, Selection (seq-sel-main) and all output of Sequence, Selection are
+licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
+International (CC BY-NC-ND 4.0) Public License. See the LICENSE file in the
+seq-sel-main directory for more information.
+
+The Gen library is licensed under the Creative Commons Attribution-NonCommercial
+4.0 International (CC BY-NC 4.0) Public License. See the LICENSE file in the Gen
+directory for more information.
+
+Other libraries in this project (Dictionary, Filter, Sound, Vector) are licensed
+under the MIT License. See the LICENSE files in those directories for more
+information.

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 78ffaed0cb6ed1d79d44e1185ff63c04e63cdce568adff67f736856ff4e96f9c
+-- hash: 73ce2dda7f226181fb531f0a2d83cb7b889cb4aaa3e72e9d4175277e28b93c74
 
 name:           Vector
 version:        0.0
@@ -13,6 +13,8 @@ description:    Please see the README on GitHub at <https://github.com/bnspaldin
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        MIT
+license-file:   LICENSE
 build-type:     Simple
 
 library

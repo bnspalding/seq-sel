@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3de17561d7c55028df9991edb25b82878594b635244b36337c2e9fb5cc363f56
+-- hash: 61f0eaf04a9d721ef779036641b3e6afe823fa251d2b0f6e963c38c392b3ba4e
 
 name:           seq-sel
 version:        0.0
@@ -15,6 +15,8 @@ bug-reports:    https://github.com/bnspalding/seq-sel/issues
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        CC BY-NC-ND 4.0
+license-file:   LICENSE
 build-type:     Simple
 
 source-repository head

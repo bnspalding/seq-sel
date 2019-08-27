@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f38472a755755b6eb2e92634891878a8188c2e4b0b9159b541bf18a84281099b
+-- hash: 5700ae676bd7381896b4274c08c7e7e848b6224bafe10c53fba200af42a53fc6
 
 name:           Sound
 version:        0.0
@@ -13,6 +13,8 @@ description:    Please see the README on GitHub at <https://github.com/bnspaldin
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        MIT
+license-file:   LICENSE
 build-type:     Simple
 
 library

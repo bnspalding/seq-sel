@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 347d89ad7cf62e11014f83c8e17e8004dc604f832a668ff373165b5423f91cd7
+-- hash: bf3508e1c793180d0ed25e508432d13b6b2ab184eced2566f2b1d2867265aed4
 
 name:           Gen
 version:        0.0
@@ -13,6 +13,8 @@ description:    Please see the README on GitHub at <https://github.com/bnspaldin
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        CC BY-NC 4.0
+license-file:   LICENSE
 build-type:     Simple
 
 library

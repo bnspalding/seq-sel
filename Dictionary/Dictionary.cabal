@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: eae22e1499fc34c566feee31aa52464120e0e5076f52ba4d245c26359f2e6710
+-- hash: 8b8e5c79f222c32a9c4eff7ab0738cae526b1c03b8650f69b8cfd24c7e6eedb5
 
 name:           Dictionary
 version:        0.0
@@ -13,6 +13,8 @@ description:    Please see the README on GitHub at <https://github.com/bnspaldin
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        MIT
+license-file:   LICENSE
 build-type:     Simple
 
 library

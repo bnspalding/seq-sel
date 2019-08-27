@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 802989988e1cd78e250ca0fcb698cbf5c2e8d743e07aefa75a9deffff9bc23bf
+-- hash: 5a74922b915dc15bb9e0cf9b23a0c9f903f6450fa486596f4c615da38c892d52
 
 name:           Filter
 version:        0.0
@@ -13,6 +13,8 @@ description:    Please see the README on GitHub at <https://github.com/bnspaldin
 author:         bnspalding
 maintainer:     bnspalding
 copyright:      Copyright (c) 2019 Ben Spalding
+license:        MIT
+license-file:   LICENSE
 build-type:     Simple
 
 library
