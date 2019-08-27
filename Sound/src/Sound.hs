@@ -5,6 +5,7 @@ import Feature
 
 newtype Sound =
   Sound String
+  deriving (Eq, Show, Ord)
 
 features :: Sound -> FeatureSet
 features s = undefined
