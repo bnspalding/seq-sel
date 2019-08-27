@@ -1,8 +1,8 @@
-name: Dictionary
+name: Filter
 version: 0.0
 author: "bnspalding"
 copyright: "Copyright (c) 2019 Ben Spalding"
-synopsis: "project description for seq-sel/dictionary"
+synopsis: "project description for seq-sel/filter"
 
 description: Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 
@@ -10,6 +10,6 @@ dependencies:
   - base >= 4.9 && < 5
 
 library:
-  source-dirs: .
+  source-dirs: src
 
 default-extensions: []

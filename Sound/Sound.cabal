@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fb93b8682f6a8e3b17db37e75facb475933cf517d4313fed9173a97035069bc4
+-- hash: f38472a755755b6eb2e92634891878a8188c2e4b0b9159b541bf18a84281099b
 
-name:           Vector
+name:           Sound
 version:        0.0
-synopsis:       project description for seq-sel/vector
+synopsis:       project description for seq-sel/sound
 description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 author:         bnspalding
 maintainer:     bnspalding
@@ -16,10 +16,13 @@ copyright:      Copyright (c) 2019 Ben Spalding
 build-type:     Simple
 
 library
+  exposed-modules:
+      Sound
+      Syl
   other-modules:
-      Paths_Vector
+      Paths_Sound
   hs-source-dirs:
-      ./.
+      src
   build-depends:
       base >=4.9 && <5
   default-language: Haskell2010

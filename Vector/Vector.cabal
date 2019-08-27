@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1c6aa5c81466ca5cb357eb19f9510b92132de5ea5206713bb39925169ca7ccd5
+-- hash: 78ffaed0cb6ed1d79d44e1185ff63c04e63cdce568adff67f736856ff4e96f9c
 
-name:           Filter
+name:           Vector
 version:        0.0
-synopsis:       project description for seq-sel/filter
+synopsis:       project description for seq-sel/vector
 description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 author:         bnspalding
 maintainer:     bnspalding
@@ -17,9 +17,9 @@ build-type:     Simple
 
 library
   other-modules:
-      Paths_Filter
+      Paths_Vector
   hs-source-dirs:
-      ./.
+      src
   build-depends:
       base >=4.9 && <5
   default-language: Haskell2010

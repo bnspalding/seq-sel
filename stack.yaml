@@ -8,12 +8,12 @@
 resolver: lts-14.1
 
 packages:
-  - src
-  - src/Sound
-  - src/Gen
-  - src/Filter
-  - src/Dictionary
-  - src/Vector
+  - seq-sel-main
+  - Sound
+  - Gen
+  - Filter
+  - Dictionary
+  - Vector
 
 ghc-options:
   "$locals": -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints

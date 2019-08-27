@@ -16,11 +16,12 @@ dependencies:
 executables:
   seq-sel:
     main: Main.hs
+    source-dirs: src
 
 tests:
   seq-sel-test:
     main: Spec.hs
-    source-dirs: ../test
+    source-dirs: test
     dependencies:
       - hspec
       - hspec-discover

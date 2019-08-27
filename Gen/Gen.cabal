@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dd9920575c07d805f0f1d9d676153db64093c13fbde9dd18c2529bbc53ac7dc1
+-- hash: 347d89ad7cf62e11014f83c8e17e8004dc604f832a668ff373165b5423f91cd7
 
-name:           Sound
+name:           Gen
 version:        0.0
-synopsis:       project description for seq-sel/sound
+synopsis:       project description for seq-sel/gen
 description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 author:         bnspalding
 maintainer:     bnspalding
@@ -17,12 +17,14 @@ build-type:     Simple
 
 library
   exposed-modules:
-      Sound
-      Syl
+      Constraints
+      Gen
   other-modules:
-      Paths_Sound
+      Paths_Gen
   hs-source-dirs:
-      ./.
+      src
   build-depends:
-      base >=4.9 && <5
+      Sound
+    , base >=4.9 && <5
+    , containers
   default-language: Haskell2010
