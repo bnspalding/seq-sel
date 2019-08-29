@@ -1,9 +1,14 @@
-module Sounds.GenAm where
+module Sounds.GenAm
+  ( sounds
+  ) where
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Feature
 import Sound
+
+sounds :: Map.Map Sound FeatureSet
+sounds = Map.union consonants vowels
 
 consonants :: Map.Map Sound FeatureSet
 consonants =
