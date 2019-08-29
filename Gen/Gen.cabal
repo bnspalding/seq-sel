@@ -1,10 +1,10 @@
-cabal-version: 1.12
+cabal-version: 2.2
 
 -- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bf3508e1c793180d0ed25e508432d13b6b2ab184eced2566f2b1d2867265aed4
+-- hash: 580852c8f718e90e9146275fc670ee98417bb5019445c062679db10520af4d8f
 
 name:           Gen
 version:        0.0
@@ -12,8 +12,8 @@ synopsis:       project description for seq-sel/gen
 description:    Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
 author:         bnspalding
 maintainer:     bnspalding
-copyright:      Copyright (c) 2019 Ben Spalding
-license:        CC BY-NC 4.0
+copyright:      Copyright 2019 Ben Spalding
+license:        CC-BY-NC-4.0
 license-file:   LICENSE
 build-type:     Simple
 

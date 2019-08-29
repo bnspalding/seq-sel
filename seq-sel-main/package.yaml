@@ -3,7 +3,7 @@ version: 0.0
 github: "bnspalding/seq-sel"
 author: "bnspalding"
 copyright: "Copyright (c) 2019 Ben Spalding"
-license: "CC BY-NC-ND 4.0"
+license: "CC-BY-NC-ND-4.0"
 synopsis: "project description for seq-sel"
 
 description: Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>

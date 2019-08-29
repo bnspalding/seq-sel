@@ -1,8 +1,8 @@
 name: Gen
 version: 0.0
 author: "bnspalding"
-copyright: "Copyright (c) 2019 Ben Spalding"
-license: "CC BY-NC 4.0"
+copyright: "Copyright 2019 Ben Spalding"
+license: "CC-BY-NC-4.0"
 synopsis: "project description for seq-sel/gen"
 
 description: Please see the README on GitHub at <https://github.com/bnspalding/seq-sel#readme>
