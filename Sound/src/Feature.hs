@@ -46,6 +46,6 @@ data Feature
   | RHOTIC -- r colored vowels
   | PLUS_STRESSED -- differentiating between rhotic ə and ɜ (tenuous)
   | MINUS_STRESSED -- "
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 type FeatureSet = Set Feature
