@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c480d54328edfc5bf1bbfe122b3fee8f08d9c80b4e035413ed691eb8e95b9dda
+-- hash: d6a733f79b0669d36c73d87b72169b2d27da2f40d1197c30c4487c7a16933f8a
 
 name:           Sound
 version:        0.0
@@ -23,6 +23,7 @@ library
       Sound
       Sounds.GenAm
       Syl
+      Word
   other-modules:
       Paths_Sound
   hs-source-dirs:
