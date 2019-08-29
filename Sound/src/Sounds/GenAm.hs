@@ -1,5 +1,6 @@
 module Sounds.GenAm
   ( sounds
+  , features
   ) where
 
 import qualified Data.Map.Strict as Map
@@ -10,6 +11,10 @@ import Sound
 sounds :: Map.Map Sound FeatureSet
 sounds = Map.union consonants vowels
 
+features :: Sound -> Maybe FeatureSet
+features s = Map.lookup s sounds
+
+--- Private: GenAm definitions ----------------
 consonants :: Map.Map Sound FeatureSet
 consonants =
   Map.fromList
