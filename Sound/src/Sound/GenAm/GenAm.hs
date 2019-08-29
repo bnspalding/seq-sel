@@ -1,12 +1,12 @@
-module Sounds.GenAm
+module Sounds.GenAm.GenAm
   ( sounds
   , features
   ) where
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
-import Feature
-import Sound
+import Sound.Feature
+import Sound.Sound
 
 sounds :: Set.Set Sound
 sounds = Map.keysSet _sounds

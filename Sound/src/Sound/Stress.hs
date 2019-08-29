@@ -1,4 +1,4 @@
-module Stress where
+module Sound.Stress where
 
 data Stress
   = ReducedStress

@@ -1,6 +1,6 @@
-module Syl where
+module Sound.Syl where
 
-import Sound
+import Sound.Sound
 
 data Syl =
   Syl

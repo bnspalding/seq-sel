@@ -1,4 +1,4 @@
-module Feature where
+module Sound.Feature where
 
 import Data.Set as Set
 
