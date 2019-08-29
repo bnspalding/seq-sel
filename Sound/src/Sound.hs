@@ -1,11 +1,13 @@
 module Sound where
 
-import Data.Set as Set
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import Feature
+import qualified Sounds.GenAm as GenAm
 
 newtype Sound =
   Sound String
   deriving (Eq, Show, Ord)
 
-features :: Sound -> FeatureSet
-features s = undefined
+features :: Sound -> Maybe FeatureSet
+features s = Map.lookup s GenAm.sounds
