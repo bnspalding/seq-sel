@@ -279,3 +279,221 @@ consonants =
           , DORSAL
           ])
     ]
+
+vowels :: Map.Map Sound FeatureSet
+vowels =
+  Map.fromList
+    [ ( Sound "i" -- , 0069, close front unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , PLUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , PLUS_ATR
+          ])
+    , ( Sound "ɪ" -- , 026A, near-close front unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , PLUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "ɛ" -- , 025B, open-mid front unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , PLUS_ATR
+          ])
+    , ( Sound "æ" --, 00E6, near-open front unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , PLUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "ə" -- , 0259, mid central unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "ʌ" -- , 028C, open-mid back unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "ɑ" -- , 0251, open back unrounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , PLUS_LOW
+          , PLUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "u" -- , 0075, close back rounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , PLUS_ROUND
+          , PLUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , PLUS_ATR
+          ])
+    , ( Sound "ʊ" -- , 028A, near-close back rounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , PLUS_ROUND
+          , PLUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "ɔ" -- , 0254, open-mid back rounded,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , PLUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , MINUS_ATR
+          ])
+    , ( Sound "e͡ɪ" -- , 0065 0361 026A,
+      , Set.fromList -- diphthong, closing mid-to-high narrow front  
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , PLUS_ATR
+          , MINUS_WIDE
+          ])
+    , ( Sound "a͡ɪ" -- , 0061 0361 026A, diphthong closing low-to-high wide,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          , PLUS_WIDE
+          ])
+    , ( Sound "a͡ʊ" -- , 0061 0361 028A, diphthong closing low-to-high backward front-to-back wide,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , PLUS_ROUND
+          , MINUS_HIGH
+          , PLUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          , PLUS_WIDE
+          ])
+    , ( Sound "o͡ʊ" -- , 006F 0361 028A, diphthong closing mid-to-high narrow back,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , PLUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , PLUS_ATR
+          , MINUS_WIDE
+          ])
+    , ( Sound "ɔ͡ɪ" -- , 0254 0361 026A, diphthong closing mid-to-high forward back-to-front wide,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , PLUS_BACK
+          , MINUS_ATR
+          , PLUS_WIDE
+          ])
+    , ( Sound "ɜ˞" -- , 025C 02DE, mid central rhotic stressed,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          , RHOTIC
+          , PLUS_STRESSED
+          ])
+    , ( Sound "ə˞" -- , 0259 02DE, mid central rhotic unstressed,
+      , Set.fromList
+          [ PLUS_SYLLABIC
+          , MINUS_CONSONANTAL
+          , PLUS_SONORANT
+          , PLUS_CONTINUANT
+          , MINUS_ROUND
+          , MINUS_HIGH
+          , MINUS_LOW
+          , MINUS_BACK
+          , MINUS_ATR
+          , RHOTIC
+          , MINUS_STRESSED
+          ])
+    ]
