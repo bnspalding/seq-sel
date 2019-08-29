@@ -1,18 +1,9 @@
-module Sounds.GenAm.GenAm
-  ( sounds
-  , features
-  ) where
+module Sound.GenAm.Sounds where
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Sound.Feature
 import Sound.Sound
-
-sounds :: Set.Set Sound
-sounds = Map.keysSet _sounds
-
-features :: Sound -> Maybe FeatureSet
-features s = Map.lookup s _sounds
 
 --- Private: GenAm definitions ----------------
 _sounds :: Map.Map Sound FeatureSet
