@@ -1,7 +1,6 @@
 module Sound.Feature where
 
 import Data.Set as Set
-import Sound.Sound
 
 contains :: FeatureSet -> FeatureSet -> Bool
 contains check = Set.isSubsetOf check
