@@ -11,7 +11,22 @@ import Sound.Syl
 import Sound.Word as W
 
 syllabify :: [Sound] -> W.Word
-syllabify [current, next, ss] = undefined
+syllabify [] = []
+syllabify ss = _syllabify [] [] Nothing ss
+
+_syllabify ::
+     [[Sound]] -> [Sound] -> Maybe SonorityDirection -> [Sound] -> W.Word
+_syllabify _ _ _ [] = []
+_syllabify result currentSyl _ (current:[]) =
+  let final = (result ++ [currentSyl ++ [current]])
+   in makeSyl <$> final
+_syllabify result currentSyl prevDir (current:next:ss) =
+  let currentDir = Just (getDir current next)
+   in case shouldBreak prevDir currentDir of
+        True ->
+          _syllabify (result ++ [currentSyl]) [current] currentDir (next : ss)
+        False ->
+          _syllabify result (currentSyl ++ [current]) currentDir (next : ss)
 
 type Sonority = Int
 
@@ -41,19 +56,14 @@ data SonorityDirection
   deriving (Ord, Eq)
 
 getDir :: Sound -> Sound -> SonorityDirection
-getDir s1 s2 =
-  if (sonority s1) < (sonority s2)
-    then UP
-    else DOWN
+getDir s1 s2
+  | (sonority s1) < (sonority s2) = UP
+  | otherwise = DOWN
 
 -- syllables should be broken up at DOWN-to-UP inflection points
-shouldBreak :: SonorityDirection -> Sound -> Sound -> Bool
-shouldBreak prevDir s1 s2 =
-  if prevDir == DOWN && curDir == UP
-    then True
-    else False
-  where
-    curDir = getDir s1 s2
+shouldBreak :: Maybe SonorityDirection -> Maybe SonorityDirection -> Bool
+shouldBreak (Just DOWN) (Just UP) = True
+shouldBreak _ _ = False
 
 makeSyl :: [Sound] -> Syl
 makeSyl ss = Syl {onset = before, nucleus = [mostSonorous], coda = after}
