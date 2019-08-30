@@ -8,7 +8,7 @@ module Gen
 
 import Constraints
 import qualified Data.Map as Map
-import Sound
+import Sound.Sound
 
 data Term =
   Term
