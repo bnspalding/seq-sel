@@ -35,6 +35,7 @@ type Sonority = Int
 
 sonority :: Sound -> Sonority
 sonority s
+  | s == Sound "s" = 0 -- "s" is a special case
   | not (isVoiced fs) && isStop fs = 1
   | isVoiced fs && isStop fs = 2
   | not (isVoiced fs) && isFricative fs = 3
