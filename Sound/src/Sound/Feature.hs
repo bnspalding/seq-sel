@@ -1,14 +1,19 @@
 module Sound.Feature where
 
 import Data.Set as Set
+import Sound.Sound
+
+contains :: FeatureSet -> FeatureSet -> Bool
+contains check = Set.isSubsetOf check
+
+contains1 :: Feature -> FeatureSet -> Bool
+contains1 check = Set.member check
 
 data Feature
   = PLUS_SYLLABIC
   | MINUS_SYLLABIC
   | PLUS_CONSONANTAL -- vocal tract constriction
   | MINUS_CONSONANTAL -- "
-  | PLUS_APPROX
-  | MINUS_APPROX
   | PLUS_SONORANT -- pressure behind oral constriction
   | MINUS_SONORANT -- "
   | PLUS_CONTINUANT -- complete closure of oral cavity
@@ -49,3 +54,45 @@ data Feature
   deriving (Eq, Ord, Show)
 
 type FeatureSet = Set Feature
+
+featureSet :: [Feature] -> Set Feature
+featureSet = Set.fromList
+
+isStop :: FeatureSet -> Bool
+isStop =
+  ((&&) . contains (featureSet [MINUS_SONORANT, MINUS_CONTINUANT])) <*>
+  (not . contains1 DELREL)
+
+isVoiced :: FeatureSet -> Bool
+isVoiced = contains1 PLUS_VOICE
+
+isFricative :: FeatureSet -> Bool
+isFricative = contains (featureSet [PLUS_CONTINUANT, MINUS_SONORANT])
+
+isAffricate :: FeatureSet -> Bool
+isAffricate = contains1 DELREL
+
+isNasal :: FeatureSet -> Bool
+isNasal = contains1 NASAL
+
+isLateral :: FeatureSet -> Bool
+isLateral = contains1 LATERAL
+
+isApproximant :: FeatureSet -> Bool
+isApproximant =
+  contains (featureSet [PLUS_CONTINUANT, PLUS_SONORANT, PLUS_CONSONANTAL])
+
+isGlide :: FeatureSet -> Bool
+isGlide = contains (featureSet [MINUS_CONSONANTAL, MINUS_SYLLABIC])
+
+isVowel :: FeatureSet -> Bool
+isVowel = contains1 PLUS_SYLLABIC
+
+isHighVowel :: FeatureSet -> Bool
+isHighVowel = contains (featureSet [PLUS_SYLLABIC, PLUS_HIGH])
+
+isMidVowel :: FeatureSet -> Bool
+isMidVowel = contains (featureSet [PLUS_SYLLABIC, MINUS_HIGH, MINUS_LOW])
+
+isLowVowel :: FeatureSet -> Bool
+isLowVowel = contains (featureSet [PLUS_SYLLABIC, PLUS_LOW])

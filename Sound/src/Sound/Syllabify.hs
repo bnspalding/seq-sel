@@ -4,6 +4,8 @@ module Sound.Syllabify
 
 import Data.List
 import Data.Ord
+import Sound.Feature
+import Sound.GenAm
 import Sound.Sound
 import Sound.Syl
 import Sound.Word as W
@@ -14,7 +16,24 @@ syllabify [current, next, ss] = undefined
 type Sonority = Int
 
 sonority :: Sound -> Sonority
-sonority s = undefined
+sonority s
+  | not (isVoiced fs) && isStop fs = 1
+  | isVoiced fs && isStop fs = 2
+  | not (isVoiced fs) && isFricative fs = 3
+  | isVoiced fs && isFricative fs = 4
+  | isAffricate fs = 4
+  | isNasal fs = 5
+  | isLateral fs = 6
+  | isApproximant fs || isGlide fs = 7
+  | isHighVowel fs = 8
+  | isMidVowel fs = 9
+  | isLowVowel fs = 10
+  | otherwise = 0
+  where
+    fs =
+      case features s of
+        Just f -> f
+        Nothing -> featureSet []
 
 data SonorityDirection
   = UP
