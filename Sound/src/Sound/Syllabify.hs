@@ -14,19 +14,21 @@ syllabify :: [Sound] -> W.Word
 syllabify [] = []
 syllabify ss = _syllabify [] [] Nothing ss
 
-_syllabify ::
-     [[Sound]] -> [Sound] -> Maybe SonorityDirection -> [Sound] -> W.Word
+_syllabify :: [[Sound]] -> [Sound] -> Maybe SonorityDir -> [Sound] -> W.Word
+-- Empty Case: do nothing when supplied an empty initial sound list
 _syllabify _ _ _ [] = []
+-- End Case: package up the result when the end of the list is reached
 _syllabify result currentSyl _ (current:[]) =
   let final = (result ++ [currentSyl ++ [current]])
    in makeSyl <$> final
+-- Recursive Case: break the sound list into sublists at breakpoints
 _syllabify result currentSyl prevDir (current:next:ss) =
   let currentDir = Just (getDir current next)
-   in case shouldBreak prevDir currentDir of
-        True ->
-          _syllabify (result ++ [currentSyl]) [current] currentDir (next : ss)
-        False ->
-          _syllabify result (currentSyl ++ [current]) currentDir (next : ss)
+      (_result, _currentSyl) =
+        case shouldBreak prevDir currentDir of
+          True -> ((result ++ [currentSyl]), [current])
+          False -> (result, (currentSyl ++ [current]))
+   in _syllabify _result _currentSyl currentDir (next : ss)
 
 type Sonority = Int
 
@@ -50,18 +52,18 @@ sonority s
         Just f -> f
         Nothing -> featureSet []
 
-data SonorityDirection
+data SonorityDir
   = UP
   | DOWN
   deriving (Ord, Eq)
 
-getDir :: Sound -> Sound -> SonorityDirection
+getDir :: Sound -> Sound -> SonorityDir
 getDir s1 s2
   | (sonority s1) < (sonority s2) = UP
   | otherwise = DOWN
 
 -- syllables should be broken up at DOWN-to-UP inflection points
-shouldBreak :: Maybe SonorityDirection -> Maybe SonorityDirection -> Bool
+shouldBreak :: Maybe SonorityDir -> Maybe SonorityDir -> Bool
 shouldBreak (Just DOWN) (Just UP) = True
 shouldBreak _ _ = False
 
