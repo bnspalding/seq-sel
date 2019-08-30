@@ -7,8 +7,9 @@ import Data.Ord
 import Sound.Feature
 import Sound.GenAm
 import Sound.Sound
+import Sound.Stress
 import Sound.Syl
-import Sound.Word as W
+import Sound.Word as W (Word)
 
 syllabify :: [Sound] -> W.Word
 syllabify [] = []
@@ -68,7 +69,13 @@ shouldBreak (Just DOWN) (Just UP) = True
 shouldBreak _ _ = False
 
 makeSyl :: [Sound] -> Syl
-makeSyl ss = Syl {onset = before, nucleus = [mostSonorous], coda = after}
+makeSyl ss =
+  Syl
+    { onset = before
+    , nucleus = [mostSonorous]
+    , coda = after
+    , stress = NullStress
+    }
   where
     (mostSonorous, mostSonorousI) =
       maximumBy (comparing (sonority . fst)) (zip ss [0 ..])
