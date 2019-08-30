@@ -11,6 +11,9 @@ data Syl =
     , stress :: Stress
     }
 
+instance Show Syl where
+  show syl = show (sounds syl)
+
 rhyme :: Syl -> [Sound]
 rhyme syl = nucleus syl ++ coda syl
 
