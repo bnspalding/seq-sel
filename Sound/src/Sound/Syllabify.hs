@@ -69,6 +69,7 @@ shouldBreak (Just DOWN) (Just UP) = True
 shouldBreak _ _ = False
 
 makeSyl :: [Sound] -> Syl
+makeSyl [] = error "no sounds passed to makeSyl"
 makeSyl ss =
   Syl
     { onset = before
@@ -79,4 +80,7 @@ makeSyl ss =
   where
     (mostSonorous, mostSonorousI) =
       maximumBy (comparing (sonority . fst)) (zip ss [0 ..])
-    (before, _:after) = splitAt mostSonorousI ss
+    (before, after) =
+      case splitAt mostSonorousI ss of
+        (_before, []) -> (_before, [])
+        (_before, _:_after) -> (_before, _after)
