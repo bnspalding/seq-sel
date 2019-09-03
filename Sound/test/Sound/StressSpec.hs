@@ -2,7 +2,22 @@ module Sound.StressSpec
   ( spec
   ) where
 
+import Sound.Stress
 import Test.Hspec
 
 spec :: Spec
-spec = describe "Sound.Stress" $ do it "no tests written" $ do pending
+spec =
+  describe "Sound.Stress" $ do
+    describe "stress levels" $ do
+      it "ReducedStress is LowStress" $
+        ReducedStress `shouldSatisfy`
+        (\x -> isLowStress x && not (isHighStress x))
+      it "Unstressed is LowStress" $
+        Unstressed `shouldSatisfy` (\x -> isLowStress x && not (isHighStress x))
+      it "SecondaryStress is HighStress" $
+        SecondaryStress `shouldSatisfy`
+        (\x -> isHighStress x && not (isLowStress x))
+      it "Stressed is HighStress" $
+        Stressed `shouldSatisfy` (\x -> isHighStress x && not (isLowStress x))
+      it "NullStress is neither HighStress or LowStress" $
+        NullStress `shouldSatisfy` (\x -> not (isHighStress x || isLowStress x))
