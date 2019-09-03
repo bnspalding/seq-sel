@@ -13,4 +13,12 @@ dependencies:
 library:
   source-dirs: src
 
+tests:
+  Sound-test:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - Sound
+      - hspec
+
 default-extensions: []

@@ -10,6 +10,7 @@ data Syl =
     , coda :: [Sound]
     , stress :: Stress
     }
+  deriving (Eq)
 
 instance Show Syl where
   show syl = show (sounds syl)
