@@ -14,3 +14,7 @@ isLowStress s = s <= Unstressed
 
 isHighStress :: Stress -> Bool
 isHighStress s = s >= SecondaryStress
+
+maybeStress :: Stress -> Maybe Stress
+maybeStress NullStress = Nothing
+maybeStress s = Just s
