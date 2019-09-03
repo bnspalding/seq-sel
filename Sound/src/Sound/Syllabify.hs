@@ -57,15 +57,18 @@ sonority s
 data SonorityDir
   = UP
   | DOWN
+  | FLAT
   deriving (Ord, Eq)
 
 getDir :: Sound -> Sound -> SonorityDir
 getDir s1 s2
+  | (sonority s1) == (sonority s2) = FLAT
   | (sonority s1) < (sonority s2) = UP
   | otherwise = DOWN
 
 -- syllables should be broken up at DOWN-to-UP inflection points
 shouldBreak :: Maybe SonorityDir -> Maybe SonorityDir -> Bool
+shouldBreak (Just FLAT) _ = True
 shouldBreak (Just DOWN) (Just UP) = True
 shouldBreak _ _ = False
 
