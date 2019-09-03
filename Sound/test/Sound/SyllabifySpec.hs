@@ -53,7 +53,7 @@ spec = do
     describe "empty list" $
       it "returns an empty syl set" $ syllabify [] `shouldBe` []
     describe "single sound" $
-      it "one sound" $ syllabify [Sound "t"] `shouldBe` [s [] ["t"] []]
+      it "works as expected" $ syllabify [Sound "t"] `shouldBe` [s [] ["t"] []]
     describe "two sounds" $
       it "works as expected" $
       syllabify (Sound <$> ["l", "p"]) `shouldBe` [s [] ["l"] ["p"]]
