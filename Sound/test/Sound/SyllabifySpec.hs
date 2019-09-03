@@ -67,8 +67,9 @@ spec = do
         syllabify (Sound <$> ["p", "p"]) `shouldBe`
         [(s [] ["p"] []), (s [] ["p"] [])]
     describe "unknown input" $
-      it "ignores the unknown symbols" $
-      syllabify (Sound <$> ["p", "2", "ɑ"]) `shouldBe` [s ["p"] ["ɑ"] []]
+      it "silently accepts the unknown symbols as sonority 0" $
+      syllabify (Sound <$> ["p", "2", "ɑ"]) `shouldBe`
+      [(s [] ["p"] []), (s ["2"] ["ɑ"] [])]
 
 s :: [String] -> [String] -> [String] -> Syl
 s _onset _nucleus _coda =
