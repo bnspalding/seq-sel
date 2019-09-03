@@ -44,23 +44,25 @@ spec = do
       it "case: ɹɛt͡ʃɪd -> ɹɛ-t͡ʃɪd" $
         syllabify (Sound <$> ["ɹ", "ɛ", "t͡ʃ", "ɪ", "d"]) `shouldBe`
         [(s ["ɹ"] ["ɛ"] []), (s ["t͡ʃ"] ["ɪ"] ["d"])]
-  describe "empty list" $
-    it "returns an empty syl set" $ syllabify [] `shouldBe` []
-  describe "single sound" $
-    it "one sound" $ syllabify [Sound "t"] `shouldBe` [s [] ["t"] []]
-  describe "two sounds" $
-    it "works as expected" $
-    syllabify (Sound <$> ["l", "p"]) `shouldBe` [s [] ["l"] ["p"]]
-  describe "two equal sounds" $ do
-    context "with vowels" $
-      it "splits them into two syllables" $
-      syllabify (Sound <$> ["a͡ɪ", "a͡ɪ"]) `shouldBe`
-      [(s [] ["a͡ɪ"] []), (s [] ["a͡ɪ"] [])]
-    context "with consonants" $
-      it "splits them into two syllables" $
-      syllabify (Sound <$> ["p", "p"]) `shouldBe`
-      [(s [] ["p"] []), (s [] ["p"] [])]
-  describe "unknown input" $ it "throws an error" $ pending
+    describe "empty list" $
+      it "returns an empty syl set" $ syllabify [] `shouldBe` []
+    describe "single sound" $
+      it "one sound" $ syllabify [Sound "t"] `shouldBe` [s [] ["t"] []]
+    describe "two sounds" $
+      it "works as expected" $
+      syllabify (Sound <$> ["l", "p"]) `shouldBe` [s [] ["l"] ["p"]]
+    describe "two equal sounds" $ do
+      context "with vowels" $
+        it "splits them into two syllables" $
+        syllabify (Sound <$> ["a͡ɪ", "a͡ɪ"]) `shouldBe`
+        [(s [] ["a͡ɪ"] []), (s [] ["a͡ɪ"] [])]
+      context "with consonants" $
+        it "splits them into two syllables" $
+        syllabify (Sound <$> ["p", "p"]) `shouldBe`
+        [(s [] ["p"] []), (s [] ["p"] [])]
+    describe "unknown input" $
+      it "ignores the unknown symbols" $
+      syllabify (Sound <$> ["p", "2", "ɑ"]) `shouldBe` [s ["p"] ["ɑ"] []]
 
 s :: [String] -> [String] -> [String] -> Syl
 s _onset _nucleus _coda =
