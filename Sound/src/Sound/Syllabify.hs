@@ -19,8 +19,11 @@ _syllabify :: [[Sound]] -> [Sound] -> Maybe SonorityDir -> [Sound] -> W.Word
 -- Empty Case: do nothing when supplied an empty initial sound list
 _syllabify _ _ _ [] = []
 -- End Case: package up the result when the end of the list is reached
-_syllabify result currentSyl _ (current:[]) =
-  let final = (result ++ [currentSyl ++ [current]])
+_syllabify result currentSyl prevDir (current:[]) =
+  let final =
+        if prevDir == Just FLAT -- special case: FLAT at end creates new syllable
+          then (result ++ [currentSyl] ++ [[current]])
+          else (result ++ [currentSyl ++ [current]])
    in makeSyl <$> final
 -- Recursive Case: break the sound list into sublists at breakpoints
 _syllabify result currentSyl prevDir (current:next:ss) =
