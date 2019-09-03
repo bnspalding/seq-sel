@@ -44,6 +44,12 @@ spec = do
       it "case: ɹɛt͡ʃɪd -> ɹɛ-t͡ʃɪd" $
         syllabify (Sound <$> ["ɹ", "ɛ", "t͡ʃ", "ɪ", "d"]) `shouldBe`
         [(s ["ɹ"] ["ɛ"] []), (s ["t͡ʃ"] ["ɪ"] ["d"])]
+      it "case: pɑɑ -> pɑ-ɑ" $
+        syllabify (Sound <$> ["p", "ɑ", "ɑ"]) `shouldBe`
+        [(s ["p"] ["ɑ"] []), (s [] ["ɑ"] [])]
+      it "case: pɑɑl -> pɑ-ɑl" $
+        syllabify (Sound <$> ["p", "ɑ", "ɑ", "l"]) `shouldBe`
+        [(s ["p"] ["ɑ"] []), (s [] ["ɑ"] ["l"])]
     describe "empty list" $
       it "returns an empty syl set" $ syllabify [] `shouldBe` []
     describe "single sound" $
