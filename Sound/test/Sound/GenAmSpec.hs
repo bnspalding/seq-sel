@@ -19,10 +19,18 @@ spec =
         GenAm.sounds `shouldSatisfy` (== allSounds)
       it "does not contain common mistypes: e a o r g ɑ͡ɪ ɛ˞ y" $
         GenAm.sounds `shouldSatisfy` (Set.disjoint mistypes)
-      it "contains no duplicate sounds (by feature set)" $ pending
+      it "contains no duplicate sounds (by feature set)" $
+        GenAm.sounds `shouldSatisfy`
+        (foldl (\acc x -> acc && (uniqueFeatureSet GenAm.sounds x)) True)
 
 allSounds :: Set.Set Sound
 allSounds = Set.union vowels consonants
+
+uniqueFeatureSet :: Set.Set Sound -> Sound -> Bool
+uniqueFeatureSet set s =
+  foldl (\acc x -> acc && ((fs /= (GenAm.features x)) || s == x)) True set
+  where
+    fs = GenAm.features s
 
 consonants :: Set.Set Sound
 consonants =
