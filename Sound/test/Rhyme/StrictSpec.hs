@@ -7,9 +7,9 @@ import Test.Hspec
 
 spec :: Spec
 spec = do
-  describe "isRhyme" $ do
+  describe "rhyme" $ do
     it "checks equality between the rhymes of two syls" $ pending
-  describe "isAssonance" $ do
+  describe "assonance" $ do
     it "checks equality betwee the nuclei of two syls" $ pending
-  describe "isAlliteration" $ do
+  describe "alliteration" $ do
     it "checks equality between the onsets of two syls" $ pending

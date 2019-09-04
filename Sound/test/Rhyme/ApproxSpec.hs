@@ -7,15 +7,15 @@ import Test.Hspec
 
 spec :: Spec
 spec = do
-  describe "RhymeSimilarity" $ do
+  describe "rhyme" $ do
     it "measures the feature similarity between the rhymes of two syls" $
       pending
     it "is normalized between the numbers 0 and 1" $ pending
-  describe "AssonanceSimilarity" $ do
+  describe "assonance" $ do
     it "measures the feature similarity between the nuclei of two syls" $
       pending
     it "is normalized between the numbers 0 and 1" $ pending
-  descirbe "AlliterationSimilarity" $ do
+  describe "alliteration" $ do
     it "measures the feature similarity between the onsets of two syls" $
       pending
     it "is normalized between the numbers 0 and 1" $ pending
