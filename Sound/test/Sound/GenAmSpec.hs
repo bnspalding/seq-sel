@@ -16,10 +16,13 @@ spec =
       it "vowels are: i ɪ ɛ æ ə ʌ ɑ u ʊ ɔ e͡ɪ a͡ɪ a͡ʊ o͡ʊ ɔ͡ɪ ɜ˞ ə˞" $
         GenAm.sounds `shouldSatisfy` (Set.isProperSubsetOf vowels)
       it "does not contain any other symbols than those given above" $
-        GenAm.sounds `shouldSatisfy` (== (Set.union vowels consonants))
+        GenAm.sounds `shouldSatisfy` (== allSounds)
       it "does not contain common mistypes: e a o r g ɑ͡ɪ ɛ˞ y" $
         GenAm.sounds `shouldSatisfy` (Set.disjoint mistypes)
       it "contains no duplicate sounds (by feature set)" $ pending
+
+allSounds :: Set.Set Sound
+allSounds = Set.union vowels consonants
 
 consonants :: Set.Set Sound
 consonants =
