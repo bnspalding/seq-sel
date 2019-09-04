@@ -10,8 +10,8 @@ import Test.Hspec
 
 spec :: Spec
 spec = do
-  describe "Sound.Feature" $ do
-    context "with GenAm: natural classes of features" $ do
+  describe "Natural Classes from Features" $ do
+    context "with the Sound.GenAm sound set" $ do
       it "isStop: p t k b d ɡ" $
         (_filter isStop) `shouldBe` Set.fromList ["p", "t", "k", "b", "d", "ɡ"]
       it "isVoiced: m b v ð n d z l d͡ʒ ʒ ɹ j ŋ ɡ w" $

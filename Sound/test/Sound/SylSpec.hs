@@ -9,7 +9,7 @@ import Test.Hspec
 
 spec :: Spec
 spec =
-  describe "Sound.Syl" $ do
+  describe "Syl" $ do
     it "onset 'p l ɔ p s' -> [p, l]" $
       onset demoSyl `shouldBe` (Sound <$> ["p", "l"])
     it "nucleus 'p l ɔ p s' -> [ɔ]" $
