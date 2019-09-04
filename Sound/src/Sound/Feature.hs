@@ -79,7 +79,7 @@ isLateral = contains1 LATERAL
 
 isApproximant :: FeatureSet -> Bool
 isApproximant =
-  contains (featureSet [PLUS_CONTINUANT, PLUS_SONORANT, PLUS_CONSONANTAL])
+  contains (featureSet [PLUS_CONTINUANT, PLUS_SONORANT, MINUS_SYLLABIC])
 
 isGlide :: FeatureSet -> Bool
 isGlide = contains (featureSet [MINUS_CONSONANTAL, MINUS_SYLLABIC])
