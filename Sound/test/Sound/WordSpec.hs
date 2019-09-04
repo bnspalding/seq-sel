@@ -10,7 +10,8 @@ import Test.Hspec
 
 spec :: Spec
 spec =
-  describe "Sound.Word" $ do
+  describe "Word" $ do
+    it "length 'pʌmp.kɪn' -> 2" $ length demoWord `shouldBe` 2
     it "stress 'pʌmp.kɪn' -> [Stressed, Unstressed] " $
       W.stress demoWord `shouldBe` [Stressed, Unstressed]
     it "sounds 'pʌmp.kɪn' -> [p, ʌ, m, p, k, ɪ, n] " $
