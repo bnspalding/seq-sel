@@ -28,7 +28,7 @@ _compare f syl1 syl2 =
     fs2 = _merge $ _featuresOf $ f syl2
 
 _featuresOf :: [Sound] -> [FeatureSet]
-_featuresOf ss = ((\(Just x) -> x) . GenAm.features) <$> ss
+_featuresOf ss = (featuresOrEmpty . GenAm.features) <$> ss
 
 _merge :: [FeatureSet] -> FeatureSet
 _merge fsS = foldl (Set.union) Set.empty fsS

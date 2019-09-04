@@ -8,6 +8,10 @@ contains check = Set.isSubsetOf check
 contains1 :: Feature -> FeatureSet -> Bool
 contains1 check = Set.member check
 
+featuresOrEmpty :: Maybe FeatureSet -> FeatureSet
+featuresOrEmpty (Just fs) = fs
+featuresOrEmpty Nothing = Set.empty
+
 data Feature
   = PLUS_SYLLABIC
   | MINUS_SYLLABIC
