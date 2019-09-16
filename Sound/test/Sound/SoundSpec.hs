@@ -5,6 +5,5 @@ module Sound.SoundSpec
 import Test.Hspec
 
 spec :: Spec
-spec = do
-  describe "Sound" $ do
-    it "no tests needed for Sound.Sound" $ True `shouldBe` True
+spec =
+  describe "Sound" $ it "no tests needed for Sound.Sound" $ True `shouldBe` True
