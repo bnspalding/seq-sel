@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8b8e5c79f222c32a9c4eff7ab0738cae526b1c03b8650f69b8cfd24c7e6eedb5
+-- hash: 7b12f343d2c6dc5f7ba743778d29f53f0f06360fe262f782bbe6d8261f8ac2c0
 
 name:           Dictionary
 version:        0.0
@@ -18,10 +18,13 @@ license-file:   LICENSE
 build-type:     Simple
 
 library
+  exposed-modules:
+      Dictionary
   other-modules:
       Paths_Dictionary
   hs-source-dirs:
       src
   build-depends:
       base >=4.9 && <5
+    , containers
   default-language: Haskell2010

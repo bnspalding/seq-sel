@@ -8,6 +8,7 @@ description: Please see the README on GitHub at <https://github.com/bnspalding/s
 
 dependencies:
   - base >= 4.9 && < 5
+  - containers
 
 library:
   source-dirs: src
