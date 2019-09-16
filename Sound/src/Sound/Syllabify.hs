@@ -3,6 +3,7 @@ module Sound.Syllabify
   ) where
 
 import Data.List
+import Data.Maybe
 import Data.Ord
 import Sound.Feature
 import Sound.GenAm
@@ -19,19 +20,19 @@ _syllabify :: [[Sound]] -> [Sound] -> Maybe SonorityDir -> [Sound] -> W.Word
 -- Empty Case: do nothing when supplied an empty initial sound list
 _syllabify _ _ _ [] = []
 -- End Case: package up the result when the end of the list is reached
-_syllabify result currentSyl prevDir (current:[]) =
+_syllabify result currentSyl prevDir [current] =
   let final =
         if prevDir == Just FLAT -- special case: FLAT at end creates new syllable
-          then (result ++ [currentSyl] ++ [[current]])
-          else (result ++ [currentSyl ++ [current]])
+          then result ++ [currentSyl] ++ [[current]]
+          else result ++ [currentSyl ++ [current]]
    in makeSyl <$> final
 -- Recursive Case: break the sound list into sublists at breakpoints
 _syllabify result currentSyl prevDir (current:next:ss) =
   let currentDir = Just (getDir current next)
       (_result, _currentSyl) =
-        case shouldBreak prevDir currentDir of
-          True -> ((result ++ [currentSyl]), [current])
-          False -> (result, (currentSyl ++ [current]))
+        if shouldBreak prevDir currentDir
+          then (result ++ [currentSyl], [current])
+          else (result, currentSyl ++ [current])
    in _syllabify _result _currentSyl currentDir (next : ss)
 
 type Sonority = Int
@@ -52,10 +53,7 @@ sonority s
   | isLowVowel fs = 10
   | otherwise = 0
   where
-    fs =
-      case features s of
-        Just f -> f
-        Nothing -> featureSet []
+    fs = fromMaybe (featureSet []) (features s)
 
 data SonorityDir
   = UP
@@ -65,8 +63,8 @@ data SonorityDir
 
 getDir :: Sound -> Sound -> SonorityDir
 getDir s1 s2
-  | (sonority s1) == (sonority s2) = FLAT
-  | (sonority s1) < (sonority s2) = UP
+  | sonority s1 == sonority s2 = FLAT
+  | sonority s1 < sonority s2 = UP
   | otherwise = DOWN
 
 -- syllables should be broken up at DOWN-to-UP inflection points

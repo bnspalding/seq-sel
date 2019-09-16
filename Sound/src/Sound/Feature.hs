@@ -3,10 +3,10 @@ module Sound.Feature where
 import Data.Set as Set
 
 contains :: FeatureSet -> FeatureSet -> Bool
-contains check = Set.isSubsetOf check
+contains = Set.isSubsetOf
 
 contains1 :: Feature -> FeatureSet -> Bool
-contains1 check = Set.member check
+contains1 = Set.member
 
 featuresOrEmpty :: Maybe FeatureSet -> FeatureSet
 featuresOrEmpty (Just fs) = fs
