@@ -1,4 +1,4 @@
-module Dictionary.Dictionary where
+module Dictionary where
 
 import qualified Data.Set as Set
 
