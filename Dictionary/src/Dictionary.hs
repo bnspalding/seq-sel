@@ -36,3 +36,9 @@ prev d entry = Set.elemAt i d
 
 contains :: Dictionary -> String -> Bool
 contains d entry = Set.member entry d
+
+-- NOTE: this currently will return the first word after some character,
+-- so it will do things like firstOfLetter 'e' = "f..." if there are
+-- no e words in the given dictionary
+firstOfLetter :: Dictionary -> Char -> Maybe String
+firstOfLetter d c = Set.lookupGE [c] d
