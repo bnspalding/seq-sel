@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 76e2ae2c4ad33e0260763d92d586f2ec219100f80e6bbe45aa986ec7e25cf3fb
+-- hash: b1788ed31f0a5a4f2e4d2c7feead74f152c6fb4acff5ea9bd740f2bccfeb8159
 
 name:           Sound
 version:        0.0
@@ -21,9 +21,12 @@ library
   exposed-modules:
       Rhyme.Approx
       Rhyme.Strict
+      Sound
       Sound.Feature
       Sound.GenAm
       Sound.GenAm.Sounds
+      Sound.IPA
+      Sound.Pronunciation
       Sound.Sound
       Sound.Stress
       Sound.Syl
