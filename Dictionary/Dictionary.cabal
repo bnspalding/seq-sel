@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7b12f343d2c6dc5f7ba743778d29f53f0f06360fe262f782bbe6d8261f8ac2c0
+-- hash: e5ba7f97303cd768ad01cf6315f711e7bffc76ec4c237387c5775ded2e73e16d
 
 name:           Dictionary
 version:        0.0
@@ -19,7 +19,7 @@ build-type:     Simple
 
 library
   exposed-modules:
-      Dictionary
+      Dictionary.Dictionary
   other-modules:
       Paths_Dictionary
   hs-source-dirs:
