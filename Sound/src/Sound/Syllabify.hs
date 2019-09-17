@@ -5,18 +5,15 @@ module Sound.Syllabify
 import Data.List
 import Data.Maybe
 import Data.Ord
+import Sound
 import Sound.Feature
 import Sound.GenAm
-import Sound.Sound
-import Sound.Stress
-import Sound.Syl
-import Sound.Word as W (Word)
 
-syllabify :: [Sound] -> W.Word
+syllabify :: [Sound] -> Sound.Word
 syllabify [] = []
 syllabify ss = _syllabify [] [] Nothing ss
 
-_syllabify :: [[Sound]] -> [Sound] -> Maybe SonorityDir -> [Sound] -> W.Word
+_syllabify :: [[Sound]] -> [Sound] -> Maybe SonorityDir -> [Sound] -> Sound.Word
 -- Empty Case: do nothing when supplied an empty initial sound list
 _syllabify _ _ _ [] = []
 -- End Case: package up the result when the end of the list is reached
