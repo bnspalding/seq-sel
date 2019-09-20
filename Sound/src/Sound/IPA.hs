@@ -4,6 +4,7 @@ module Sound.IPA
   ) where
 
 import Data.List
+import Data.Ord
 import qualified Data.Set as Set
 import Sound
 import qualified Sound.GenAm as GenAm
@@ -18,7 +19,7 @@ stringToIPASounds s =
    in toIPAIter [] (normalize s)
 
 normalize :: String -> String
-normalize = replaceWithTrie repls
+normalize = replaceWithTrie repls . replaceWithTrie repls
 
 repls :: Trie
 repls =
@@ -45,7 +46,7 @@ repls =
 
 ipaSymbols :: [String]
 ipaSymbols =
-  (sortOn length . Set.toList . Set.map (\(Sound x) -> x)) GenAm.sounds
+  (sortOn (Down . length) . Set.toList . Set.map (\(Sound x) -> x)) GenAm.sounds
 
 nextSound :: String -> [String] -> (Sound, String)
 nextSound [] _ = error "empty list given to nextSound in Sound.IPA"

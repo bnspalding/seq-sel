@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4f811276c3c44b7fcc0a10ea464375c8592b8fd2aa4dc5be241ad191cae19245
+-- hash: f4e2dcd20f00feb5f18d19e6523226ebd34eb16a39c60a20e2417e3bf2d517a9
 
 name:           Sound
 version:        0.0
@@ -50,6 +50,7 @@ test-suite Sound-test
       Rhyme.StrictSpec
       Sound.FeatureSpec
       Sound.GenAmSpec
+      Sound.IPASpec
       Sound.SoundSpec
       Sound.StressSpec
       Sound.SyllabifySpec
