@@ -34,7 +34,7 @@ main = do
 run :: String -> Opts -> IO ()
 run word opts =
   putStrLn $
-  writePoem (poem (makeSpec opts) (getSeqFunc (optFunc opts)) [getTerm word])
+  writePoem $ poem (makeSpec opts) (getSeqFunc (optFunc opts)) [getTerm word]
 
 -- Flag Parser info -----------------------------------        
 optsParser :: ParserInfo Input
@@ -99,8 +99,8 @@ readConfig filename = either (error . show) id <$> Y.decodeFileEither filename
 
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq
-getSeqFunc "dict" = Dict
-getSeqFunc "vec" = Vector
+getSeqFunc "dict" = undefined
+getSeqFunc "vec" = undefined
 getSeqFunc _ = error "unknown sequence function"
 
 makeSpec :: Opts -> Spec

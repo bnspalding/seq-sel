@@ -2,14 +2,15 @@ module Gen
   ( poem
   , writePoem
   , Spec(..)
-  , Seq(..)
+  , Seq
   , Term(..)
   ) where
 
 import Constraints
 import qualified Data.Map as Map
-import Sound.Sound
+import Sound
 
+-- TODO: define an actual type for Gen.Term
 data Term =
   Term
 
@@ -20,9 +21,7 @@ data Spec =
     , rhymeMap :: Map.Map Char Sound
     }
 
-data Seq
-  = Dict
-  | Vector
+type Seq = (Term -> [Term])
 
 poem :: Spec -> Seq -> [Term] -> [Term]
 poem spec seq w = undefined
