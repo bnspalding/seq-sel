@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 580852c8f718e90e9146275fc670ee98417bb5019445c062679db10520af4d8f
+-- hash: 99389db8c95637c39342492bcc51e0053b0e31dca6cdd28d04025d5fe2467556
 
 name:           Gen
 version:        0.0
@@ -29,4 +29,19 @@ library
       Sound
     , base >=4.9 && <5
     , containers
+  default-language: Haskell2010
+
+test-suite Gen-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_Gen
+  hs-source-dirs:
+      test
+  build-depends:
+      Gen
+    , Sound
+    , base >=4.9 && <5
+    , containers
+    , hspec
   default-language: Haskell2010

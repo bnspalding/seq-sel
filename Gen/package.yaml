@@ -15,4 +15,12 @@ dependencies:
 library:
   source-dirs: src
 
+tests:
+  Gen-test:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - hspec
+      - Gen
+
 default-extensions: []
