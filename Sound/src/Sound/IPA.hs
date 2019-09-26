@@ -8,6 +8,7 @@ import Data.Ord
 import qualified Data.Set as Set
 import Sound
 import qualified Sound.GenAm as GenAm
+import Sound.Stress
 import Text.Replace
 
 stringToIPASounds :: String -> [Sound]
@@ -44,9 +45,14 @@ repls =
   where
     s = string'fromString
 
+stressSymbols :: [String]
+stressSymbols = [stressSymbolIPA, secondaryStressSymbolIPA]
+
 ipaSymbols :: [String]
 ipaSymbols =
-  (sortOn (Down . length) . Set.toList . Set.map (\(Sound x) -> x)) GenAm.sounds
+  (sortOn (Down . length) .
+   (++) stressSymbols . Set.toList . Set.map (\(Sound x) -> x))
+    GenAm.sounds
 
 nextSound :: String -> [String] -> (Sound, String)
 nextSound [] _ = error "empty list given to nextSound in Sound.IPA"

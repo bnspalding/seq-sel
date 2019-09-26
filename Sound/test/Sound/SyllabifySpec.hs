@@ -77,5 +77,5 @@ s _onset _nucleus _coda =
     { onset = Sound <$> _onset
     , nucleus = Sound <$> _nucleus
     , coda = Sound <$> _coda
-    , stress = NullStress
+    , stress = Unstressed
     }

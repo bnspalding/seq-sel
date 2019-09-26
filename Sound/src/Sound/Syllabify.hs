@@ -8,6 +8,7 @@ import Data.Ord
 import Sound
 import Sound.Feature
 import Sound.GenAm
+import Sound.Stress
 
 syllabify :: [Sound] -> Sound.Word
 syllabify [] = []
@@ -22,14 +23,22 @@ _syllabify result currentSyl prevDir [current] =
         if prevDir == Just FLAT -- special case: FLAT at end creates new syllable
           then result ++ [currentSyl] ++ [[current]]
           else result ++ [currentSyl ++ [current]]
-   in makeSyl <$> final
+   in makeSyl <$> filter (not . null) final
 -- Recursive Case: break the sound list into sublists at breakpoints
 _syllabify result currentSyl prevDir (current:next:ss) =
-  let currentDir = Just (getDir current next)
+  let currentDir =
+        case current of
+          (Sound "ˈ") -> Nothing
+          (Sound "ˌ") -> Nothing
+          _ -> Just (getDir current next)
       (_result, _currentSyl) =
-        if shouldBreak prevDir currentDir
-          then (result ++ [currentSyl], [current])
-          else (result, currentSyl ++ [current])
+        case current of
+          (Sound "ˈ") -> (result ++ [currentSyl], [current])
+          (Sound "ˌ") -> (result ++ [currentSyl], [current])
+          _ ->
+            if shouldBreak prevDir currentDir
+              then (result ++ [currentSyl], [current])
+              else (result, currentSyl ++ [current])
    in _syllabify _result _currentSyl currentDir (next : ss)
 
 type Sonority = Int
@@ -72,17 +81,40 @@ shouldBreak _ _ = False
 
 makeSyl :: [Sound] -> Syl
 makeSyl [] = error "no sounds passed to makeSyl"
-makeSyl ss =
+makeSyl soundList =
   Syl
     { onset = before
     , nucleus = [mostSonorous]
     , coda = after
-    , stress = NullStress
+    , stress = stressFromMaybe stressSymMaybe
     }
   where
+    (stressSymMaybe, ss) = extractStressSym soundList
     (mostSonorous, mostSonorousI) =
       maximumBy (comparing (sonority . fst)) (zip ss [0 ..])
     (before, after) =
       case splitAt mostSonorousI ss of
         (_before, []) -> (_before, [])
         (_before, _:_after) -> (_before, _after)
+
+stressSymsIPA :: [String]
+stressSymsIPA = [stressSymbolIPA, secondaryStressSymbolIPA]
+
+extractStressSym :: [Sound] -> (Maybe Sound, [Sound])
+extractStressSym s = (stressMaybe, stressRemoved)
+  where
+    stressMaybe =
+      case stressExtracted of
+        [] -> Nothing
+        [x] -> Just x
+        _ -> error "multiple stress symbols found in one syllable"
+    stressExtracted = filter (\(Sound x) -> x `elem` stressSymsIPA) s
+    stressRemoved = filter (`notElem` stressExtracted) s
+
+stressFromMaybe :: Maybe Sound -> Stress
+stressFromMaybe s =
+  case s of
+    Nothing -> Unstressed
+    Just (Sound "ˈ") -> Stressed
+    Just (Sound "ˌ") -> SecondaryStress
+    _ -> error "unknown stress symbol"
