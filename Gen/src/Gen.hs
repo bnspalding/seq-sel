@@ -4,6 +4,8 @@ module Gen
   , Spec(..)
   , Seq
   , Term
+  , Line
+  , Stanza
   ) where
 
 import Constraints

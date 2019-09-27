@@ -35,7 +35,7 @@ run :: String -> Opts -> IO ()
 run word opts =
   putStrLn $
   writePoem $
-  poem (makeSpec opts) (getSeqFunc (optFunc opts)) [[[getTerm word]]]
+  poem (makeSpec opts) (getSeqFunc (optFunc opts)) (prepFirstWord word)
 
 -- Flag Parser info -----------------------------------        
 optsParser :: ParserInfo Input
@@ -107,5 +107,13 @@ getSeqFunc _ = error "unknown sequence function"
 makeSpec :: Opts -> Spec
 makeSpec opts = undefined
 
+-- TODO: Provide special handling for the first word here (such as filling with
+-- a previous word to get the meter right). This will require a hook into the
+-- dictionary and most likely Gen
+prepFirstWord :: String -> [Stanza]
+prepFirstWord word = [[[getTerm word]]]
+
+-- use this as an opportunity to check that the first word exists in the
+-- dictionary. Probably go to a Maybe val and back, with an error on Nothing.
 getTerm :: String -> Term
 getTerm = undefined
