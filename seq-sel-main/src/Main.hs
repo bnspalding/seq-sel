@@ -34,7 +34,8 @@ main = do
 run :: String -> Opts -> IO ()
 run word opts =
   putStrLn $
-  writePoem $ poem (makeSpec opts) (getSeqFunc (optFunc opts)) [getTerm word]
+  writePoem $
+  poem (makeSpec opts) (getSeqFunc (optFunc opts)) [[[getTerm word]]]
 
 -- Flag Parser info -----------------------------------        
 optsParser :: ParserInfo Input

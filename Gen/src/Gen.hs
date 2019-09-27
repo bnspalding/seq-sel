@@ -3,7 +3,7 @@ module Gen
   , writePoem
   , Spec(..)
   , Seq
-  , Term(..)
+  , Term
   ) where
 
 import Constraints
@@ -11,9 +11,8 @@ import Data.List
 import qualified Data.Map as Map
 import Sound
 
--- TODO: define an actual type for Gen.Term
-data Term =
-  Term
+-- unless things get overly complicated, Term should just be a String
+type Term = String
 
 type Line = [Term]
 
@@ -32,7 +31,7 @@ poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 poem spec seq w = undefined
 
 writePoem :: [Stanza] -> String
-writePoem stanzas = joinStanzas <$> stanzas
+writePoem = joinStanzas
   where
     joinStanzas s = intercalate "\n\n" $ joinLines <$> s
     joinLines ls = unlines $ joinTerms <$> ls
