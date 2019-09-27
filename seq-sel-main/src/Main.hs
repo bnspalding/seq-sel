@@ -13,6 +13,9 @@ data Opts =
     , optLines :: !Int
     , optRhyme :: !String
     , optMeter :: !String
+    , optPronFile :: !String
+    , optRhymeThreshold :: !Float
+    , optCustomConstraints :: !String
     }
   deriving (Show)
 
@@ -86,13 +89,31 @@ parseOpts =
   strOption
     (long "meter" <>
      short 'm' <>
-     metavar "SCHEME" <> value "01010101/010101" <> help "specify the meter")
+     metavar "SCHEME" <> value "01010101/010101" <> help "specify the meter") <*>
+  strOption
+    (long "pronFile" <>
+     short 'p' <>
+     metavar "PRONUNCIATION_FILE" <>
+     help "file from which dictionary and pronunciation info is constructed") <*>
+  option
+    auto
+    (long "rhymeThreshold" <>
+     short 't' <>
+     value 1.0 <> help "similarity value used in rhyming (between 0 and 1).") <*>
+  strOption
+    (long "customCons" <>
+     short 'c' <>
+     metavar "CONSTRAINT_STRING" <>
+     value "" <> help "provide a custom syllable-level constraint set")
 
 -- Read config.yaml file ---------------------------------
 instance Y.FromJSON Opts where
   parseJSON (Y.Object m) =
     Opts <$> m Y..: "func" <*> m Y..: "lines" <*> m Y..: "rhyme" <*>
-    m Y..: "meter"
+    m Y..: "meter" <*>
+    m Y..: "pronFile" <*>
+    m Y..: "rhymeThreshold" <*>
+    m Y..: "customCons"
   parseJSON _ = fail "Expected Object for Config value"
 
 readConfig :: String -> IO Opts

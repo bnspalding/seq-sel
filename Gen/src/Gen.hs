@@ -11,7 +11,9 @@ module Gen
 import Constraints
 import Data.List
 import qualified Data.Map as Map
+import Dictionary
 import Sound
+import Sound.Pronunciation
 
 -- unless things get overly complicated, Term should just be a String
 type Term = String
@@ -25,6 +27,8 @@ data Spec =
     { specConstraints :: [[[[Constraint]]]] -- stanza [ line [ syl [Constraint]]]
     , wordsUsed :: [Term]
     , rhymeMap :: Map.Map Char Sound
+    , pronTable :: PronunciationTable
+    , dict :: Dictionary
     }
 
 type Seq = (Term -> [Term])
