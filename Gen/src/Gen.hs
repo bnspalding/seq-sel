@@ -34,7 +34,12 @@ data Spec =
 type Seq = (Term -> [Term])
 
 poem :: Spec -> Seq -> [Stanza] -> [Stanza]
-poem spec seq w = undefined
+-- First Word Case: some special handling is required for the first word
+-- (such as filling with a previous word to get the meter right)
+-- also, need to verify that the given word does indeed exist in dict
+poem spec seq [[[w]]] = undefined
+-- Standard Case: add words to the poem until the spec is fully realized
+poem spec seq stanzas = undefined
 
 writePoem :: [Stanza] -> String
 writePoem = joinStanzas
