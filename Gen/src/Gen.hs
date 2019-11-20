@@ -1,11 +1,13 @@
 module Gen
   ( poem
   , writePoem
+  , makeSpec
   , Spec(..)
   , Seq
   , Term
   , Line
   , Stanza
+  , Constraint
   ) where
 
 import Constraints
@@ -47,3 +49,6 @@ writePoem = joinStanzas
     joinStanzas s = intercalate "\n\n" $ joinLines <$> s
     joinLines ls = unlines $ joinTerms <$> ls
     joinTerms ts = unwords $ show <$> ts
+
+makeSpec :: Int -> String -> String -> String -> Float -> String -> Spec
+makeSpec lineCount rhymeS meterS pronFile rThreshold customCons = undefined

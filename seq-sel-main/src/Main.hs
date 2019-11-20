@@ -37,8 +37,7 @@ main = do
 run :: String -> Opts -> IO ()
 run word opts =
   putStrLn $
-  writePoem $
-  poem (makeSpec opts) (getSeqFunc (optFunc opts)) (prepFirstWord word)
+  writePoem $ poem (fromOpts opts) (getSeqFunc (optFunc opts)) [[[word]]]
 
 -- Flag Parser info -----------------------------------        
 optsParser :: ParserInfo Input
@@ -125,11 +124,12 @@ getSeqFunc "dict" = undefined
 getSeqFunc "vec" = undefined
 getSeqFunc _ = error "unknown sequence function"
 
-makeSpec :: Opts -> Spec
-makeSpec opts = undefined
-
--- for now, the input simply needs to be wrapped into a stanza.
--- future prep (if required) should go here.
--- all verification and poem-related adjustments happen in Gen.
-prepFirstWord :: String -> [Stanza]
-prepFirstWord word = [[[word]]]
+fromOpts :: Opts -> Spec
+fromOpts opts = makeSpec lc r m p t c
+  where
+    lc = optLines opts
+    r = optRhyme opts
+    m = optMeter opts
+    p = optPronFile opts
+    t = optRhymeThreshold opts
+    c = optCustomConstraints opts
