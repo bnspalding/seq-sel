@@ -51,4 +51,21 @@ writePoem = joinStanzas
     joinTerms ts = unwords $ show <$> ts
 
 makeSpec :: Int -> String -> String -> String -> Float -> String -> Spec
-makeSpec lineCount rhymeS meterS pronFile rThreshold customCons = undefined
+makeSpec lineCount rhymeS meterS pronFile rThreshold customCons =
+  let cs = makeCons lineCount meterS rhymeS rThreshold customCons
+      rm = makeRhymeMap rhymeS
+      p = getPronTable pronFile
+      d = dictFromPronTable p
+   in Spec
+        { specConstraints = cs
+        , wordsUsed = []
+        , rhymeMap = makeRhymeMap rhymeS
+        , pronTable = p
+        , dict = d
+        }
+
+getPronTable :: String -> PronunciationTable
+getPronTable = undefined
+
+dictFromPronTable :: PronunciationTable -> Dictionary
+dictFromPronTable = undefined
