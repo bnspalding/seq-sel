@@ -16,7 +16,6 @@ import qualified Data.Set as Set
 import Dictionary
 import Gen.Constraints
 import Sound
-import Sound.Pronunciation
 
 type Term = Entry -- a dictionary Entry
 
