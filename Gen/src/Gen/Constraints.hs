@@ -1,4 +1,4 @@
-module Constraints where
+module Gen.Constraints where
 
 import qualified Data.Map as Map
 import Sound

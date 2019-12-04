@@ -10,10 +10,10 @@ module Gen
   , Constraint
   ) where
 
-import Constraints
 import Data.List
 import qualified Data.Map as Map
 import Dictionary
+import Gen.Constraints
 import Sound
 import Sound.Pronunciation
 
