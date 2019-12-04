@@ -17,8 +17,7 @@ import Dictionary
 import Sound
 import Sound.Pronunciation
 
--- unless things get overly complicated, Term should just be a String
-type Term = String
+type Term = Entry -- a dictionary Entry
 
 type Line = [Term]
 
@@ -28,8 +27,7 @@ data Spec =
   Spec
     { specConstraints :: [[[[Constraint]]]] -- stanza [ line [ syl [Constraint]]]
     , wordsUsed :: [Term]
-    , rhymeMap :: Map.Map Char Sound
-    , pronTable :: PronunciationTable
+    , rhymeMap :: Map.Map Char Syl
     , dict :: Dictionary
     }
 
@@ -51,21 +49,16 @@ writePoem = joinStanzas
     joinTerms ts = unwords $ show <$> ts
 
 makeSpec :: Int -> String -> String -> String -> Float -> String -> Spec
-makeSpec lineCount rhymeS meterS pronFile rThreshold customCons =
+makeSpec lineCount rhymeS meterS dictFile rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
       rm = makeRhymeMap rhymeS
-      p = getPronTable pronFile
-      d = dictFromPronTable p
+      d = makeDict dictFile
    in Spec
         { specConstraints = cs
         , wordsUsed = []
         , rhymeMap = makeRhymeMap rhymeS
-        , pronTable = p
         , dict = d
         }
 
-getPronTable :: String -> PronunciationTable
-getPronTable = undefined
-
-dictFromPronTable :: PronunciationTable -> Dictionary
-dictFromPronTable = undefined
+makeDict :: String -> Dictionary
+makeDict = undefined
