@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7b12f343d2c6dc5f7ba743778d29f53f0f06360fe262f782bbe6d8261f8ac2c0
+-- hash: 7bbf7330ee45844036365cb4afa97ec61e5a27b74902f183af0f003ec208e80c
 
 name:           Dictionary
 version:        0.0
@@ -25,6 +25,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.9 && <5
+      Sound
+    , base >=4.9 && <5
     , containers
   default-language: Haskell2010

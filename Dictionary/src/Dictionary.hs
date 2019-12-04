@@ -1,22 +1,41 @@
 module Dictionary where
 
 import qualified Data.Set as Set
+import Sound.Pronunciation (Pronunciation, makePronunciation)
 
-type Dictionary = Set.Set String
+type Dictionary = Set.Set Entry
 
-fromList :: [String] -> Dictionary
+data Entry =
+  Entry
+    { text :: String
+    , glosses :: [String] -- the definition(s) of a word
+    , pos :: String -- at some point, a more constrained type may be better
+    , pronunciation :: Pronunciation -- same as Sound.Word, i.e. [Syl]
+    }
+  deriving (Eq, Show)
+
+instance Ord Entry where
+  compare e1 e2 = compare (text e1) (text e2)
+
+fromList :: [Entry] -> Dictionary
 fromList = Set.fromList
 
-first :: Dictionary -> String
+fromStringTuples :: [(String, [String], String, String)] -> Dictionary
+fromStringTuples ts = fromList $ uncurriedMakeEntry <$> ts
+  where
+    uncurriedMakeEntry (t, g, p, pr) = makeEntry t g p pr
+
+first :: Dictionary -> Entry
 first = Set.elemAt 0
 
-last :: Dictionary -> String
+last :: Dictionary -> Entry
 last d = Set.elemAt (size d - 1) d
 
 size :: Dictionary -> Int
 size = Set.size
 
-next :: Dictionary -> String -> String
+-- next wraps around the dictionary when given the last entry
+next :: Dictionary -> Entry -> Entry
 next d entry = Set.elemAt i d
   where
     prevI = Set.findIndex entry d
@@ -25,7 +44,8 @@ next d entry = Set.elemAt i d
         then 0
         else prevI + 1
 
-prev :: Dictionary -> String -> String
+-- prev wraps around the dictionary when given the first entry
+prev :: Dictionary -> Entry -> Entry
 prev d entry = Set.elemAt i d
   where
     nextI = Set.findIndex entry d
@@ -34,11 +54,23 @@ prev d entry = Set.elemAt i d
         then size d - 1
         else nextI - 1
 
-contains :: Dictionary -> String -> Bool
+contains :: Dictionary -> Entry -> Bool
 contains d entry = Set.member entry d
 
--- NOTE: this currently will return the first word after some character,
--- so it will do things like firstOfLetter 'e' = "f..." if there are
--- no e words in the given dictionary
-firstOfLetter :: Dictionary -> Char -> Maybe String
-firstOfLetter d c = Set.lookupGE [c] d
+-- becase lookupGE returns the first entry GE an entry with text "c"
+-- it is necessary to ensure the entry actually starts with c
+-- otherwise, firstOfLetter d 's' could return entry with text "t..." 
+-- for a dictionary with no entries beginning with 's'
+firstOfLetter :: Dictionary -> Char -> Maybe Entry
+firstOfLetter d c =
+  let e = Set.lookupGE (Entry [c] [] [] []) d
+   in case e of
+        Nothing -> Nothing
+        Just e ->
+          if head (text e) == c
+            then Just e
+            else Nothing
+
+makeEntry :: String -> [String] -> String -> String -> Entry
+makeEntry text glosses pos pronString =
+  Entry text glosses pos (makePronunciation pronString)
