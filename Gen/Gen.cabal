@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c0962c30220cce6e1144fed7ef4c0d05c9a478fa1dbffc67450996ca48aefef5
+-- hash: 0f00613e10946cc24eca7a93e94c6a89ac334935038cd149e613a351df4275b9
 
 name:           Gen
 version:        0.0
@@ -19,8 +19,8 @@ build-type:     Simple
 
 library
   exposed-modules:
-      Constraints
       Gen
+      Gen.Constraints
   other-modules:
       Paths_Gen
   hs-source-dirs:

@@ -10,5 +10,5 @@ newtype Constraint =
 makeCons :: Int -> String -> String -> Float -> String -> [[[[Constraint]]]]
 makeCons lineCount meterS rhymeS rhymeThreshold customCons = undefined
 
-makeRhymeMap :: String -> Map.Map Char Sound
+makeRhymeMap :: String -> Map.Map Char Syl
 makeRhymeMap rhymeString = undefined
