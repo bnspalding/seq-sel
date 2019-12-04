@@ -13,7 +13,7 @@ data Opts =
     , optLines :: !Int
     , optRhyme :: !String
     , optMeter :: !String
-    , optPronFile :: !String
+    , optDictFile :: !String
     , optRhymeThreshold :: !Float
     , optCustomConstraints :: !String
     }
@@ -36,8 +36,7 @@ main = do
 
 run :: String -> Opts -> IO ()
 run word opts =
-  putStrLn $
-  writePoem $ poem (fromOpts opts) (getSeqFunc (optFunc opts)) [[[word]]]
+  putStrLn $ writePoem $ poem (fromOpts opts) (getSeqFunc (optFunc opts)) word
 
 -- Flag Parser info -----------------------------------        
 optsParser :: ParserInfo Input
@@ -90,9 +89,9 @@ parseOpts =
      short 'm' <>
      metavar "SCHEME" <> value "01010101/010101" <> help "specify the meter") <*>
   strOption
-    (long "pronFile" <>
-     short 'p' <>
-     metavar "PRONUNCIATION_FILE" <>
+    (long "dictFile" <>
+     short 'd' <>
+     metavar "DICTIONARY_FILE" <>
      help "file from which dictionary and pronunciation info is constructed") <*>
   option
     auto
@@ -110,7 +109,7 @@ instance Y.FromJSON Opts where
   parseJSON (Y.Object m) =
     Opts <$> m Y..: "func" <*> m Y..: "lines" <*> m Y..: "rhyme" <*>
     m Y..: "meter" <*>
-    m Y..: "pronFile" <*>
+    m Y..: "dictFile" <*>
     m Y..: "rhymeThreshold" <*>
     m Y..: "customCons"
   parseJSON _ = fail "Expected Object for Config value"
@@ -125,11 +124,11 @@ getSeqFunc "vec" = undefined
 getSeqFunc _ = error "unknown sequence function"
 
 fromOpts :: Opts -> Spec
-fromOpts opts = makeSpec lc r m p t c
+fromOpts opts = makeSpec lc r m d t c
   where
     lc = optLines opts
     r = optRhyme opts
     m = optMeter opts
-    p = optPronFile opts
+    d = optDictFile opts
     t = optRhymeThreshold opts
     c = optCustomConstraints opts

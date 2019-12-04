@@ -12,6 +12,7 @@ module Gen
 
 import Data.List
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 import Dictionary
 import Gen.Constraints
 import Sound
@@ -33,13 +34,21 @@ data Spec =
 
 type Seq = (Term -> [Term])
 
-poem :: Spec -> Seq -> [Stanza] -> [Stanza]
+poem :: Spec -> Seq -> String -> [Stanza]
+poem spec seqF firstWord =
+  let d = dict spec
+      es = Set.filter (\e -> text e == firstWord) d
+   in if Set.null es
+        then error "the given word is not present in the dictionary"
+        else _poem spec seqF [[[first es]]]
+
+_poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- First Word Case: some special handling is required for the first word
 -- (such as filling with a previous word to get the meter right)
 -- also, need to verify that the given word does indeed exist in dict
-poem spec seqF [[[w]]] = undefined
+_poem spec seqF [[[w]]] = undefined
 -- Standard Case: add words to the poem until the spec is fully realized
-poem spec seqF stanzas = undefined
+_poem spec seqF stanzas = undefined
 
 writePoem :: [Stanza] -> String
 writePoem = joinStanzas
