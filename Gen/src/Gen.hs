@@ -11,25 +11,15 @@ module Gen
   ) where
 
 import Data.List
-import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Dictionary
 import Gen.Constraints
-import Sound
 
 type Term = Entry -- a dictionary Entry
 
 type Line = [Term]
 
 type Stanza = [Line]
-
-data Spec =
-  Spec
-    { specConstraints :: [[[[Constraint]]]] -- stanza [ line [ syl [Constraint]]]
-    , wordsUsed :: [Term]
-    , rhymeMap :: Map.Map Char Syl
-    , dict :: Dictionary
-    }
 
 type Seq = (Term -> [Term])
 
