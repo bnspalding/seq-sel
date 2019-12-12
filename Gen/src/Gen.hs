@@ -46,11 +46,10 @@ writePoem = joinStanzas
     joinLines ls = unlines $ joinTerms <$> ls
     joinTerms ts = unwords $ show <$> ts
 
-makeSpec :: Int -> String -> String -> String -> Float -> String -> Spec
-makeSpec lineCount rhymeS meterS dictFile rThreshold customCons =
+makeSpec :: Int -> String -> String -> Dictionary -> Float -> String -> Spec
+makeSpec lineCount rhymeS meterS d rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
       rm = makeRhymeMap rhymeS
-      d = makeDict dictFile
    in Spec
         { specConstraints = cs
         , wordsUsed = []
@@ -59,4 +58,4 @@ makeSpec lineCount rhymeS meterS dictFile rThreshold customCons =
         }
 
 makeDict :: String -> Dictionary
-makeDict = undefined
+makeDict dictFile = undefined

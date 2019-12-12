@@ -2,3 +2,5 @@ func: dict
 lines: 4
 rhyme: abab
 meter: 01010101/010101
+dictFile: ${CMU_IPA}
+rhymeThreshold: .08
