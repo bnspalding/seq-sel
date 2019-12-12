@@ -63,8 +63,8 @@ contains d entry = Set.member entry d
 -- for a dictionary with no entries beginning with 's'
 firstOfLetter :: Dictionary -> Char -> Maybe Entry
 firstOfLetter d c =
-  let e = Set.lookupGE (Entry [c] [] [] []) d
-   in case e of
+  let maybeE = Set.lookupGE (Entry [c] [] [] []) d
+   in case maybeE of
         Nothing -> Nothing
         Just e ->
           if head (text e) == c
@@ -72,5 +72,5 @@ firstOfLetter d c =
             else Nothing
 
 makeEntry :: String -> [String] -> String -> String -> Entry
-makeEntry text glosses pos pronString =
-  Entry text glosses pos (makePronunciation pronString)
+makeEntry _text _glosses _pos _pronString =
+  Entry _text _glosses _pos (makePronunciation _pronString)
