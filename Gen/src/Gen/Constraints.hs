@@ -51,7 +51,12 @@ emptySyl :: SylCons
 emptySyl = ([], [])
 
 makeCons :: Int -> String -> String -> Float -> String -> PoemCons
-makeCons linesN meterS rhymeS rhymeThreshold customCons = undefined
+makeCons linesN meterS rhymeS rhymeThreshold customCons =
+  let base = replicate linesN []
+      withMeter = addMeterScheme base meterS
+      withRhyme = addRhymeScheme withMeter rhymeS rhymeThreshold
+      final = addCustomCons withRhyme customCons
+   in final
 
 makeRhymeMap :: String -> Map.Map Char (Maybe Syl)
 makeRhymeMap rhymeString = Map.fromList $ zip rhymeString (repeat Nothing)
@@ -71,8 +76,11 @@ totalLineCount p = sum $ lineCount <$> p
 constraintsAt :: PoemCons -> SylLoc -> SylCons
 constraintsAt p (stanzaI, lineI, sylI) = p !! stanzaI !! lineI !! sylI
 
-addRhymeScheme :: PoemCons -> String -> PoemCons
-addRhymeScheme p rhymeS = undefined
+addCustomCons :: PoemCons -> String -> PoemCons
+addCustomCons p customConString = undefined
+
+addRhymeScheme :: PoemCons -> String -> Float -> PoemCons
+addRhymeScheme p rhymeS rThreshold = undefined
 
 addMeterScheme :: PoemCons -> String -> PoemCons
 addMeterScheme p meterS = mergePoems p (toMeterCons p meterS)
