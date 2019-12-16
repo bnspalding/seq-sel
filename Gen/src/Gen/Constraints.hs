@@ -58,8 +58,10 @@ makeCons linesN meterS rhymeS rhymeThreshold customCons =
       final = addCustomCons withRhyme customCons
    in final
 
-makeRhymeMap :: String -> Map.Map Char (Maybe Syl)
-makeRhymeMap rhymeString = Map.fromList $ zip rhymeString (repeat Nothing)
+-- the rhyme map starts empty and is constructed during generation
+-- the keys (a,b,c) are built into the syllable constraints
+makeRhymeMap :: String -> Map.Map Char Syl
+makeRhymeMap rhymeString = Map.empty
 
 stanzaCount :: PoemCons -> Int
 stanzaCount = length
@@ -83,7 +85,19 @@ addCustomCons p customConString
   | otherwise = error "custom cons has not been implemented"
 
 addRhymeScheme :: PoemCons -> String -> Float -> PoemCons
-addRhymeScheme p rhymeS rThreshold = undefined
+addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
+  where
+    rhymeSExtended = take (totalLineCount _p) $ cycle rhymeS
+    toRS_recursive p [] _ = p
+    toRS_recursive p r@(c:cs) (stanzaI, lineI)
+      | lineI >= lineCount (p !! stanzaI) = toRS_recursive p r (stanzaI + 1, 0)
+      | otherwise =
+        let newP =
+              addConToSyl
+                (stanzaI, lineI, sylCount (p !! stanzaI !! lineI))
+                p
+                (makeRhymeConstraint c rThreshold)
+         in toRS_recursive newP cs (stanzaI, lineI + 1)
 
 addMeterScheme :: PoemCons -> String -> PoemCons
 addMeterScheme p meterS = mergePoems p (toMeterCons p meterS)
