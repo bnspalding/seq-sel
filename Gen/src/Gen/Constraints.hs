@@ -53,8 +53,8 @@ emptySyl = ([], [])
 makeCons :: Int -> String -> String -> Float -> String -> PoemCons
 makeCons linesN meterS rhymeS rhymeThreshold customCons = undefined
 
-makeRhymeMap :: String -> Map.Map Char Syl
-makeRhymeMap rhymeString = undefined
+makeRhymeMap :: String -> Map.Map Char (Maybe Syl)
+makeRhymeMap rhymeString = Map.fromList $ zip rhymeString (repeat Nothing)
 
 stanzaCount :: PoemCons -> Int
 stanzaCount = length
