@@ -2,5 +2,6 @@ func: dict
 lines: 4
 rhyme: abab
 meter: 01010101/010101
-dictFile: ${CMU_IPA}
-rhymeThreshold: .08
+dictFile: /Users/bnspalding/cmudict/ipa/cmu-ipa-reduced
+rhymeThreshold: 0.8
+customCons: ""
