@@ -76,8 +76,11 @@ totalLineCount p = sum $ lineCount <$> p
 constraintsAt :: PoemCons -> SylLoc -> SylCons
 constraintsAt p (stanzaI, lineI, sylI) = p !! stanzaI !! lineI !! sylI
 
+-- not currently implemented
 addCustomCons :: PoemCons -> String -> PoemCons
-addCustomCons p customConString = undefined
+addCustomCons p customConString
+  | customConString == "" = p
+  | otherwise = error "custom cons has not been implemented"
 
 addRhymeScheme :: PoemCons -> String -> Float -> PoemCons
 addRhymeScheme p rhymeS rThreshold = undefined
