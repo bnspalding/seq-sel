@@ -18,6 +18,7 @@ dependencies:
 executables:
   seq-sel:
     main: Main.hs
+    other-modules: OptionsParsing
     source-dirs: src
 
 tests:

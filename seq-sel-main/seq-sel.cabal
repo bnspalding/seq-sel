@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1adb9cef846623fcd152ab7175d64c8f0d1ee4a3dff8f84f98e88958092fdfab
+-- hash: e62064abb202890707b7241b9c33e8fb4a17db9b7d53e50407546b9e10485bd9
 
 name:           seq-sel
 version:        0.0
@@ -26,7 +26,7 @@ source-repository head
 executable seq-sel
   main-is: Main.hs
   other-modules:
-      Paths_seq_sel
+      OptionsParsing
   hs-source-dirs:
       src
   build-depends:
