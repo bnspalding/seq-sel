@@ -56,6 +56,3 @@ makeSpec lineCount rhymeS meterS d rThreshold customCons =
         , rhymeMap = makeRhymeMap rhymeS
         , dict = d
         }
-
-makeDict :: String -> Dictionary
-makeDict dictFile = undefined
