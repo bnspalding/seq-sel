@@ -9,7 +9,6 @@ resolver: lts-14.1
 
 packages:
   - seq-sel-main
-  - Sound
   - Gen
   - Dictionary
   - Vector
@@ -21,3 +20,5 @@ rebuild-ghc-options: true
 
 extra-deps:
   - text-replace-0.0.0.4@sha256:88800aba160dfb512cf43b24063170d34900e1646ad21f28715a22679f42ae15,1738
+  - github: bnspalding/sound
+    commit: 1df0e7cf28f6004f1c5f0cfcfe65608bfb156a3d
