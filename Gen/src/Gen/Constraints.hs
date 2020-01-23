@@ -1,10 +1,11 @@
 module Gen.Constraints
-  ( Spec(..)
-  , Constraint
-  , SpecMod
-  , makeCons
-  , makeRhymeMap
-  ) where
+  ( Spec (..),
+    Constraint,
+    SpecMod,
+    makeCons,
+    makeRhymeMap,
+  )
+where
 
 import qualified Data.Map as Map
 import Dictionary
@@ -12,13 +13,13 @@ import qualified Rhyme.Approx as Approx
 import qualified Rhyme.Strict as Strict
 import Sound
 
-data Spec =
-  Spec
-    { specConstraints :: PoemCons -- stanza [ line [ syl [Constraint]]]
-    , wordsUsed :: [Entry]
-    , rhymeMap :: Map.Map Char Syl
-    , dict :: Dictionary
-    }
+data Spec
+  = Spec
+      { specConstraints :: PoemCons, -- stanza [ line [ syl [Constraint]]]
+        wordsUsed :: [Entry],
+        rhymeMap :: Map.Map Char Syl,
+        dict :: Dictionary
+      }
 
 type Constraint = (Syl -> Spec -> Bool)
 
@@ -89,7 +90,7 @@ addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
   where
     rhymeSExtended = take (totalLineCount _p) $ cycle rhymeS
     toRS_recursive p [] _ = p
-    toRS_recursive p r@(c:cs) (stanzaI, lineI)
+    toRS_recursive p r@(c : cs) (stanzaI, lineI)
       | lineI >= lineCount (p !! stanzaI) = toRS_recursive p r (stanzaI + 1, 0)
       | otherwise =
         let newP =
@@ -106,7 +107,7 @@ toMeterCons :: PoemCons -> String -> PoemCons
 toMeterCons startingP scheme = toMC_recursive scheme startingP (0, 0, 0)
   where
     toMC_recursive [] p _ = p
-    toMC_recursive (c:cs) p (st, ln, sy)
+    toMC_recursive (c : cs) p (st, ln, sy)
       | c == '0' =
         toMC_recursive
           cs
@@ -172,13 +173,13 @@ mergeSyls (c1s, m1s) (c2s, m2s) = (c1s ++ c2s, m1s ++ m2s)
 mergeF :: (a -> a -> a) -> [a] -> [a] -> [a]
 mergeF _ [] ys = ys
 mergeF _ xs [] = xs
-mergeF f (x:xs) (y:ys) = f x y : mergeF f xs ys
+mergeF f (x : xs) (y : ys) = f x y : mergeF f xs ys
 
 replace :: Int -> a -> [a] -> [a]
 replace i x xs =
   case splitAt i xs of
     (before, []) -> before ++ [x]
-    (before, _:after) -> before ++ [x] ++ after
+    (before, _ : after) -> before ++ [x] ++ after
 
 makeRhymeConstraint :: Char -> Float -> (Constraint, SpecMod)
 makeRhymeConstraint c rThreshold =
