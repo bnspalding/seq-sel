@@ -13,7 +13,7 @@ dependencies:
   - optparse-applicative
   - yaml
   - Gen
-  - Dictionary
+  - dictionary
 
 executables:
   seq-sel:

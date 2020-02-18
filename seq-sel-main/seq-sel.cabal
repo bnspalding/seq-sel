@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e62064abb202890707b7241b9c33e8fb4a17db9b7d53e50407546b9e10485bd9
+-- hash: 080bfdaa9130c49ee9253f768b870be0b59e4379ad3bbca45eb9ad92b886acc0
 
 name:           seq-sel
 version:        0.0
@@ -30,9 +30,9 @@ executable seq-sel
   hs-source-dirs:
       src
   build-depends:
-      Dictionary
-    , Gen
+      Gen
     , base >=4.9 && <5
+    , dictionary
     , optparse-applicative
     , yaml
   default-language: Haskell2010
@@ -45,9 +45,9 @@ test-suite seq-sel-test
   hs-source-dirs:
       test
   build-depends:
-      Dictionary
-    , Gen
+      Gen
     , base >=4.9 && <5
+    , dictionary
     , hspec
     , hspec-discover
     , optparse-applicative

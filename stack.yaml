@@ -10,7 +10,6 @@ resolver: lts-14.1
 packages:
   - seq-sel-main
   - Gen
-  - Dictionary
   - Vector
 
 ghc-options:
@@ -21,4 +20,6 @@ rebuild-ghc-options: true
 extra-deps:
   - text-replace-0.0.0.4@sha256:88800aba160dfb512cf43b24063170d34900e1646ad21f28715a22679f42ae15,1738
   - github: bnspalding/sound
-    commit: 1df0e7cf28f6004f1c5f0cfcfe65608bfb156a3d
+    commit: c1f0f83eefcb720dc288c7c1542bf160db59ab85
+  - github: bnspalding/dictionary
+    commit: ef0ff7728a3e0cdc0c58dc4bbe1a205d82a97fec

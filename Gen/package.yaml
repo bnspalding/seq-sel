@@ -9,8 +9,8 @@ description: Please see the README on GitHub at <https://github.com/bnspalding/s
 
 dependencies:
   - base >= 4.9 && < 5
-  - Sound
-  - Dictionary
+  - sound
+  - dictionary
   - containers
 
 library:

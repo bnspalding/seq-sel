@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0f00613e10946cc24eca7a93e94c6a89ac334935038cd149e613a351df4275b9
+-- hash: 87f0ec82dff76d81858cef869472fc95a8efadd2524828c45fd0911a855ee93c
 
 name:           Gen
 version:        0.0
@@ -26,10 +26,10 @@ library
   hs-source-dirs:
       src
   build-depends:
-      Dictionary
-    , Sound
-    , base >=4.9 && <5
+      base >=4.9 && <5
     , containers
+    , dictionary
+    , sound
   default-language: Haskell2010
 
 test-suite Gen-test
@@ -40,10 +40,10 @@ test-suite Gen-test
   hs-source-dirs:
       test
   build-depends:
-      Dictionary
-    , Gen
-    , Sound
+      Gen
     , base >=4.9 && <5
     , containers
+    , dictionary
     , hspec
+    , sound
   default-language: Haskell2010
