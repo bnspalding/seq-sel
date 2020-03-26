@@ -12,6 +12,7 @@ dependencies:
   - sound
   - dictionary
   - containers
+  - text
 
 library:
   source-dirs: src

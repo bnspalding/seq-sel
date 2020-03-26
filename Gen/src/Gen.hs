@@ -1,17 +1,19 @@
 module Gen
-  ( poem
-  , writePoem
-  , makeSpec
-  , Spec(..)
-  , Seq
-  , Term
-  , Line
-  , Stanza
-  , Constraint
-  ) where
+  ( poem,
+    writePoem,
+    makeSpec,
+    Spec (..),
+    Seq,
+    Term,
+    Line,
+    Stanza,
+    Constraint,
+  )
+where
 
 import Data.List
 import qualified Data.Set as Set
+import qualified Data.Text as T
 import Dictionary
 import Gen.Constraints
 
@@ -26,10 +28,10 @@ type Seq = (Term -> [Term])
 poem :: Spec -> Seq -> String -> [Stanza]
 poem spec seqF firstWord =
   let d = dict spec
-      es = Set.filter (\e -> text e == firstWord) d
-   in if Set.null es
-        then error "the given word is not present in the dictionary"
-        else _poem spec seqF [[[first es]]]
+      esMaybe = lookupText d (T.pack firstWord)
+   in case esMaybe of
+        Nothing -> error "the given word is not present in the dictionary"
+        Just es -> _poem spec seqF [[[head es]]]
 
 _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- First Word Case: some special handling is required for the first word
@@ -51,8 +53,8 @@ makeSpec lineCount rhymeS meterS d rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
       rm = makeRhymeMap rhymeS
    in Spec
-        { specConstraints = cs
-        , wordsUsed = []
-        , rhymeMap = makeRhymeMap rhymeS
-        , dict = d
+        { specConstraints = cs,
+          wordsUsed = [],
+          rhymeMap = makeRhymeMap rhymeS,
+          dict = d
         }

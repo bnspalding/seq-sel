@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 87f0ec82dff76d81858cef869472fc95a8efadd2524828c45fd0911a855ee93c
+-- hash: 37215f86ec82af7771f10c7b188b5e33567873ba5118e15495598bbf5bee62be
 
 name:           Gen
 version:        0.0
@@ -30,6 +30,7 @@ library
     , containers
     , dictionary
     , sound
+    , text
   default-language: Haskell2010
 
 test-suite Gen-test
@@ -46,4 +47,5 @@ test-suite Gen-test
     , dictionary
     , hspec
     , sound
+    , text
   default-language: Haskell2010

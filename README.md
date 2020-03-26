@@ -13,7 +13,3 @@ while related, is not considered unique to _Sequence, Selection_'s generative
 project. It uses the CC BY-NC 4.0 license (see the LICENSE file). The intent 
 behind this license is to make the code within Gen available not only for study, 
 but also for modification and use in non-commercial settings.
-
-## TODOS
-
-TODO: update Gen to work with Ratios rather than Floats from sound:Rhyme.Approx

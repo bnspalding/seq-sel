@@ -204,5 +204,5 @@ makeMeterConstraint s =
 
 selectRhymeFunc :: Float -> (Syl -> Syl -> Bool)
 selectRhymeFunc rThreshold
-  | rThreshold < 1.0 = \s1 s2 -> Approx.rhyme s1 s2 >= rThreshold
+  | rThreshold < 1.0 = \s1 s2 -> Approx.rhyme s1 s2 >= toRational rThreshold
   | otherwise = Strict.rhyme
