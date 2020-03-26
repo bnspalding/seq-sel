@@ -47,9 +47,10 @@ type Line = [Term]
 -- | A Stanza (as in a stanza of the output poem) is a list (grouping) of Lines
 type Stanza = [Line]
 
--- | Seq describes a function that generates a sequence of Terms from a Term (to
--- be selected from according to constraints during generation)
-type Seq = (Term -> [Term])
+-- | Seq describes a function that generates a sequence of Terms from a Term,
+-- optionally using the spec to generate the list (to be selected from according
+-- to constraints during generation)
+type Seq = (Spec -> Term -> [Term])
 
 -- | poem is the primary generation function. Given a specification, a sequence
 -- function, and a starting word, it generates a poem from the sequence
