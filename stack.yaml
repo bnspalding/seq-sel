@@ -5,7 +5,7 @@
 # Resolver to choose a 'specific' stackage snapshot or a compiler version.
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
-resolver: lts-14.1
+resolver: lts-14.2
 
 packages:
   - seq-sel-main
@@ -19,6 +19,6 @@ rebuild-ghc-options: true
 extra-deps:
   - text-replace-0.0.0.4@sha256:88800aba160dfb512cf43b24063170d34900e1646ad21f28715a22679f42ae15,1738
   - github: bnspalding/sound
-    commit: c1f0f83eefcb720dc288c7c1542bf160db59ab85
+    commit: ec6f9d6d14b15d4a2aa12f9509324c4d27f2331b
   - github: bnspalding/dictionary
-    commit: ef0ff7728a3e0cdc0c58dc4bbe1a205d82a97fec
+    commit: d7e52a679ae5f254acb08cb105e79349f86dafab

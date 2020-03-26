@@ -2,9 +2,13 @@
 
 module Main where
 
+import qualified Data.ByteString.Lazy as B
+import Data.Either (rights)
 import Dictionary
 import Gen
 import OptionsParsing
+import System.Environment
+import Wiktionary (makeDictionary, readJSONL)
 
 -- Main Execution ---------------------------------
 main :: IO ()
@@ -28,7 +32,8 @@ getSeqFunc _ = error "unknown sequence function"
 
 fromOpts :: Opts -> IO Spec
 fromOpts opts = do
-  d <- readDictFile $ optDictFile opts
+  --d <- readDictFile $ optDictFile opts
+  d <- readDictFile
   let lc = optLines opts
       r = optRhyme opts
       m = optMeter opts
@@ -36,14 +41,9 @@ fromOpts opts = do
       c = optCustomConstraints opts
   return $ makeSpec lc r m d t c
 
-readDictFile :: String -> IO Dictionary
-readDictFile dictFile = do
-  ls <- lines <$> readFile dictFile
-  return $ fromList (toEntry <$> ls)
-  where
-    toEntry s =
-      let ws = words s
-       in if length ws == 2
-            then let (w, p) = (head ws, ws !! 1)
-                  in makeEntry w [] [] p
-            else error "unknown format in dictFile"
+-- TODO: this should take an option (see fromOpts)
+readDictFile :: IO Dictionary
+readDictFile = do
+  f <- getEnv "WIKTDATA_UTF8"
+  wiktdata <- B.readFile f -- expecting .jsonl file here
+  return $ makeDictionary $ rights $ readJSONL wiktdata

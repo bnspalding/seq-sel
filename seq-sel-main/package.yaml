@@ -14,6 +14,8 @@ dependencies:
   - yaml
   - Gen
   - dictionary
+  - text
+  - bytestring
 
 executables:
   seq-sel:
