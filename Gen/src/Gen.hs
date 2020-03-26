@@ -115,4 +115,27 @@ checkSyls spec (s : ss) (cs : css) = checkSyls spec [s] [cs] && checkSyls spec s
 
 -- update the spec with the new term
 applyTerm :: Term -> Spec -> Spec
-applyTerm t spec = undefined
+applyTerm t spec =
+  applySpecs
+    currentMods
+    sylsT
+    Spec
+      { specConstraints = trimmedCons,
+        wordsUsed = t : wordsUsed spec,
+        rhymeMap = rhymeMap spec,
+        dict = dict spec
+      }
+  where
+    sylsT = pronunciation t
+    sCons = specConstraints spec
+    currentLine = head (head sCons)
+    currentMods = snd <$> take (length sylsT) currentLine
+    trimmedCons = (drop (length sylsT) currentLine : tail (head sCons)) : tail sCons
+
+_applySpecs :: [SpecMod] -> Syl -> Spec -> Spec
+_applySpecs (m : ms) s spec = _applySpecs ms s (m spec s)
+_applySpecs [] _ spec = spec
+
+applySpecs :: [[SpecMod]] -> [Syl] -> Spec -> Spec
+applySpecs (ms : mss) (s : ss) spec = applySpecs mss ss (_applySpecs ms s spec)
+applySpecs [] _ spec = spec
