@@ -1,9 +1,30 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- |
+-- Module: Gen.Constraints
+-- Description: poem generation
+-- Copyright: (c) 2019 Ben Spalding (bnspalding.com)
+-- License: CC-BY-NC
+-- Stability: experimental
+--
+-- Gen.Constraints describes the Specification and constraints used in poem
+-- generation. Spec is essentially a way of capturing state across the course of
+-- poem generation, as its componenets are updated as words are added to the
+-- poem. The specConstraints are consumed during genration, whittled away with
+-- the addition of words until the spec is fully satisfied.
 module Gen.Constraints
-  ( Spec (..),
+  ( -- * Specifications
+    Spec (..),
     makeCons,
     makeRhymeMap,
+
+    -- * Constraints
+    Constraint,
+    SpecMod,
+    SylCons,
+    LineCons,
+    StanzaCons,
+    PoemCons,
   )
 where
 
@@ -14,6 +35,15 @@ import qualified Rhyme.Approx as Approx
 import qualified Rhyme.Strict as Strict
 import Sound
 
+-- | A Spec manages state during generating. It tracks words used during
+-- generation, the constraint block that is reduced throughout generation, and a
+-- rhymeMap for rhyme constraints. Beyond the syllable constraints that are
+-- formally managed by the Spec, it also helps to enforce certain larger-scale
+-- constraints, such as preventing a word that has been previously used from
+-- appearing again in the poem.
+--
+-- Gen.Constraints is largely meant to be used internally and interfaced with
+-- through Gen.
 data Spec
   = Spec
       { specConstraints :: PoemCons, -- stanza [ line [ syl [Constraint]]]
@@ -22,20 +52,28 @@ data Spec
         dict :: Dictionary
       }
 
+-- | A Constraint is a function that evaluates a syllable, using state from the
+-- Spec as needed (mainly the rhymeMap)
 type Constraint = (Syl -> Spec -> Bool)
 
+-- | A SpecMod is a modification to be made to the Spec. These are held as
+-- functions rather than applied immediately because a term must satisfy all of
+-- its constraints before being applied.
 type SpecMod = (Spec -> Syl -> Spec)
 
--- each syllable has both a set of constraints, and a set of
+-- | each syllable has both a set of constraints, and a set of
 -- spec modifications to be run when an entry satisifies those constraints
 -- this allows for modifying the rhyme scheme when an entry is selected
 -- to an empty rhyme constraint.
 type SylCons = ([Constraint], [SpecMod])
 
+-- | LineCons are a list of SylCons
 type LineCons = [SylCons]
 
+-- | StanzaCons are a list of LineCons
 type StanzaCons = [LineCons]
 
+-- | The PoemCons are the list of all the StanzaCons
 type PoemCons = [StanzaCons]
 
 type SylLoc = (Int, Int, Int) -- the [Stanza] [Line] [Syl] address of a Syl
@@ -52,6 +90,7 @@ emptyLine = [emptySyl]
 emptySyl :: SylCons
 emptySyl = ([], [])
 
+-- | makeCons generates the poem constraints from a set of options
 makeCons :: Int -> T.Text -> T.Text -> Float -> T.Text -> PoemCons
 makeCons linesN meterS rhymeS rhymeThreshold customCons =
   let base = replicate linesN []
@@ -60,7 +99,7 @@ makeCons linesN meterS rhymeS rhymeThreshold customCons =
       final = addCustomCons withRhyme customCons
    in final
 
--- the rhyme map starts empty and is constructed during generation
+-- | the rhyme map starts empty and is constructed during generation
 -- the keys (a,b,c) are built into the syllable constraints
 makeRhymeMap :: T.Text -> Map.Map Char Syl
 makeRhymeMap rhymeString = Map.empty
