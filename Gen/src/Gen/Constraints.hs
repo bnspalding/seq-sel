@@ -2,8 +2,6 @@
 
 module Gen.Constraints
   ( Spec (..),
-    Constraint,
-    SpecMod,
     makeCons,
     makeRhymeMap,
   )
@@ -195,7 +193,13 @@ makeRhymeConstraint c rThreshold =
       upd spec syl =
         let rMap = rhymeMap spec
          in case rMap Map.!? c of
-              Nothing -> Spec {rhymeMap = Map.insert c syl rMap}
+              Nothing ->
+                Spec
+                  { rhymeMap = Map.insert c syl rMap,
+                    specConstraints = specConstraints spec,
+                    dict = dict spec,
+                    wordsUsed = wordsUsed spec
+                  }
               Just _ -> spec
    in (con, upd)
 
