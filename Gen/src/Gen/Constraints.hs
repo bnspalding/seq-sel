@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Gen.Constraints
   ( Spec (..),
     Constraint,
@@ -8,6 +10,7 @@ module Gen.Constraints
 where
 
 import qualified Data.Map as Map
+import qualified Data.Text as T
 import Dictionary
 import qualified Rhyme.Approx as Approx
 import qualified Rhyme.Strict as Strict
@@ -51,7 +54,7 @@ emptyLine = [emptySyl]
 emptySyl :: SylCons
 emptySyl = ([], [])
 
-makeCons :: Int -> String -> String -> Float -> String -> PoemCons
+makeCons :: Int -> T.Text -> T.Text -> Float -> T.Text -> PoemCons
 makeCons linesN meterS rhymeS rhymeThreshold customCons =
   let base = replicate linesN []
       withMeter = addMeterScheme base meterS
@@ -61,7 +64,7 @@ makeCons linesN meterS rhymeS rhymeThreshold customCons =
 
 -- the rhyme map starts empty and is constructed during generation
 -- the keys (a,b,c) are built into the syllable constraints
-makeRhymeMap :: String -> Map.Map Char Syl
+makeRhymeMap :: T.Text -> Map.Map Char Syl
 makeRhymeMap rhymeString = Map.empty
 
 stanzaCount :: PoemCons -> Int
@@ -80,15 +83,15 @@ constraintsAt :: PoemCons -> SylLoc -> SylCons
 constraintsAt p (stanzaI, lineI, sylI) = p !! stanzaI !! lineI !! sylI
 
 -- not currently implemented
-addCustomCons :: PoemCons -> String -> PoemCons
+addCustomCons :: PoemCons -> T.Text -> PoemCons
 addCustomCons p customConString
   | customConString == "" = p
   | otherwise = error "custom cons has not been implemented"
 
-addRhymeScheme :: PoemCons -> String -> Float -> PoemCons
+addRhymeScheme :: PoemCons -> T.Text -> Float -> PoemCons
 addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
   where
-    rhymeSExtended = take (totalLineCount _p) $ cycle rhymeS
+    rhymeSExtended = take (totalLineCount _p) $ cycle (T.unpack rhymeS)
     toRS_recursive p [] _ = p
     toRS_recursive p r@(c : cs) (stanzaI, lineI)
       | lineI >= lineCount (p !! stanzaI) = toRS_recursive p r (stanzaI + 1, 0)
@@ -100,11 +103,11 @@ addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
                 (makeRhymeConstraint c rThreshold)
          in toRS_recursive newP cs (stanzaI, lineI + 1)
 
-addMeterScheme :: PoemCons -> String -> PoemCons
+addMeterScheme :: PoemCons -> T.Text -> PoemCons
 addMeterScheme p meterS = mergePoems p (toMeterCons p meterS)
 
-toMeterCons :: PoemCons -> String -> PoemCons
-toMeterCons startingP scheme = toMC_recursive scheme startingP (0, 0, 0)
+toMeterCons :: PoemCons -> T.Text -> PoemCons
+toMeterCons startingP scheme = toMC_recursive (T.unpack scheme) startingP (0, 0, 0)
   where
     toMC_recursive [] p _ = p
     toMC_recursive (c : cs) p (st, ln, sy)

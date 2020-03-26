@@ -4,6 +4,8 @@ module Main where
 
 import qualified Data.ByteString.Lazy as B
 import Data.Either (rights)
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import Dictionary
 import Gen
 import OptionsParsing
@@ -22,7 +24,7 @@ run :: String -> Opts -> IO ()
 run word opts = do
   spec <- fromOpts opts
   let seqFunc = getSeqFunc (optFunc opts)
-  putStrLn $ writePoem $ poem spec seqFunc word
+  TIO.putStrLn $ writePoem $ poem spec seqFunc (T.pack word)
 
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq
@@ -35,10 +37,10 @@ fromOpts opts = do
   --d <- readDictFile $ optDictFile opts
   d <- readDictFile
   let lc = optLines opts
-      r = optRhyme opts
-      m = optMeter opts
+      r = T.pack $ optRhyme opts
+      m = T.pack $ optMeter opts
       t = optRhymeThreshold opts
-      c = optCustomConstraints opts
+      c = T.pack $ optCustomConstraints opts
   return $ makeSpec lc r m d t c
 
 -- TODO: this should take an option (see fromOpts)

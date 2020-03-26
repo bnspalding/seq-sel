@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Gen
   ( poem,
     writePoem,
@@ -25,10 +27,10 @@ type Stanza = [Line]
 
 type Seq = (Term -> [Term])
 
-poem :: Spec -> Seq -> String -> [Stanza]
+poem :: Spec -> Seq -> T.Text -> [Stanza]
 poem spec seqF firstWord =
   let d = dict spec
-      esMaybe = lookupText d (T.pack firstWord)
+      esMaybe = lookupText d firstWord
    in case esMaybe of
         Nothing -> error "the given word is not present in the dictionary"
         Just es -> _poem spec seqF [[[head es]]]
@@ -41,14 +43,14 @@ _poem spec seqF [[[w]]] = undefined
 -- Standard Case: add words to the poem until the spec is fully realized
 _poem spec seqF stanzas = undefined
 
-writePoem :: [Stanza] -> String
+writePoem :: [Stanza] -> T.Text
 writePoem = joinStanzas
   where
-    joinStanzas s = intercalate "\n\n" $ joinLines <$> s
-    joinLines ls = unlines $ joinTerms <$> ls
-    joinTerms ts = unwords $ show <$> ts
+    joinStanzas s = T.intercalate "\n\n" $ joinLines <$> s
+    joinLines ls = T.unlines $ joinTerms <$> ls
+    joinTerms ts = T.unwords $ text <$> ts
 
-makeSpec :: Int -> String -> String -> Dictionary -> Float -> String -> Spec
+makeSpec :: Int -> T.Text -> T.Text -> Dictionary -> Float -> T.Text -> Spec
 makeSpec lineCount rhymeS meterS d rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
       rm = makeRhymeMap rhymeS
