@@ -27,14 +27,15 @@ module Gen
 
     -- * Output
     writePoem,
+    writeProns,
   )
 where
 
 import qualified Data.Text as T
-import Debug.Trace
 import Dictionary
 import Gen.Constraints
 import Sound
+import Sound.Syl
 
 -- | A Term is a word and its surrounding information, or, in other words, a
 -- dictionary Entry
@@ -62,7 +63,7 @@ poem spec seqF firstWord =
         Nothing -> error "the given word is not present in the dictionary"
         Just es ->
           let (newSpec, _, _) = applyTerm (head es) spec
-           in trace (printPoemCons (specConstraints spec)) $ _poem newSpec seqF [[[head es]]]
+           in _poem newSpec seqF [[[head es]]]
 
 _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- First Word Case: some special handling is required for the first word
@@ -75,29 +76,41 @@ _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 _poem spec seqF stanzas =
   if isComplete spec
     then stanzas
-    else trace (show (writePoem stanzas)) $ _poem newSpec seqF newStanzas
+    else _poem newSpec seqF newStanzas
   where
     currentW = head $ wordsUsed spec
     nextTerm = head $ filter (`checkTerm` spec) (seqF spec currentW)
     (newSpec, isLineBreak, isStanzaBreak) = applyTerm nextTerm spec
     currentStanza = last stanzas
     currentLine = last currentStanza
+    newCL = currentLine ++ [nextTerm]
+    newCS = init currentStanza ++ [newCL]
+    emptyLine = []
+    emptyStanza = [emptyLine]
     newStanzas =
+      -- lineBreaks and stanza breaks are for the next word, not the word
+      -- currently being placed
       if isLineBreak
         then
           if isStanzaBreak
-            then stanzas ++ [[[nextTerm]]]
-            else init stanzas ++ [currentStanza ++ [[nextTerm]]]
-        else init stanzas ++ [init currentStanza ++ [currentLine ++ [nextTerm]]]
+            then init stanzas ++ [newCS] ++ [emptyStanza]
+            else init stanzas ++ [newCS ++ [emptyLine]]
+        else init stanzas ++ [newCS]
     isComplete = null . specConstraints
 
 -- | writePoem takes a generated poem and outputs it to text.
 writePoem :: [Stanza] -> T.Text
-writePoem = joinStanzas
+writePoem = _outPoem text
+
+writeProns :: [Stanza] -> T.Text
+writeProns = _outPoem pronToText
   where
-    joinStanzas s = T.intercalate "\n\n" $ joinLines <$> s
-    joinLines ls = T.unlines $ joinTerms <$> ls
-    joinTerms ts = T.unwords $ text <$> ts
+    pronToText t = T.intercalate "." (sylToText <$> pronunciation t)
+    sylToText s = T.concat $ getSymbol <$> sounds s
+    getSymbol (Sound s) = s
+
+_outPoem :: (Term -> T.Text) -> [Stanza] -> T.Text
+_outPoem f = T.intercalate "\n\n" . fmap (T.unlines . fmap (T.unwords . fmap f))
 
 -- makeSpec generates a Spec from its different parts:
 --
@@ -121,7 +134,7 @@ checkTerm t spec
   | null currentLine = error "The current line is zero length!"
   | length sylsT > length currentLine = False -- too long for current line
   | t `elem` wordsUsed spec = False -- enforce no repeats
-  | otherwise = trace ("checking " ++ show (text t)) $ checkSyls spec sylsT currentCons
+  | otherwise = checkSyls spec sylsT currentCons
   where
     sylsT = pronunciation t
     sCons = specConstraints spec
@@ -137,20 +150,18 @@ checkSyls spec (s : ss) (cs : css) = checkSyls spec [s] [cs] && checkSyls spec s
 -- update the spec with the new term
 applyTerm :: Term -> Spec -> (Spec, Bool, Bool)
 applyTerm t spec =
-  trace
-    ("applying " ++ show (text t))
-    ( applySpecs
-        currentMods
-        sylsT
-        Spec
-          { specConstraints = trimmedCons,
-            wordsUsed = t : wordsUsed spec,
-            rhymeMap = rhymeMap spec,
-            dict = dict spec
-          },
-      isLineBreak,
-      isStanzaBreak
-    )
+  ( applySpecs
+      currentMods
+      sylsT
+      Spec
+        { specConstraints = trimmedCons,
+          wordsUsed = t : wordsUsed spec,
+          rhymeMap = rhymeMap spec,
+          dict = dict spec
+        },
+    isLineBreak,
+    isStanzaBreak
+  )
   where
     sylsT = pronunciation t
     sCons = specConstraints spec
@@ -165,9 +176,9 @@ applyTerm t spec =
       -- clear out empty lists when trimming
       if isLineBreak
         then
-          if trace "--- line break ---" isStanzaBreak
+          if isStanzaBreak
             then
-              if trace "--- stanza break ---" null remainingStanzas
+              if null remainingStanzas
                 then []
                 else remainingStanzas
             else remainingLines : remainingStanzas

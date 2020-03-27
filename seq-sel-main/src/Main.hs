@@ -27,7 +27,9 @@ run :: String -> Opts -> IO ()
 run word opts = do
   spec <- fromOpts opts
   let seqFunc = getSeqFunc (optFunc opts)
-  TIO.putStrLn $ writePoem $ poem spec seqFunc (T.pack word)
+      output = poem spec seqFunc (T.pack word)
+  TIO.putStrLn $ writePoem output
+  TIO.putStrLn $ writeProns output
 
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq
@@ -39,12 +41,13 @@ fromOpts :: Opts -> IO Spec
 fromOpts opts = do
   --d <- readDictFile $ optDictFile opts
   d <- readDictFile
-  dFiltered <- trace "dict filtered" <$> filterDict d
+  dFiltered <- filterDict d
   let lc = optLines opts
       r = T.pack $ optRhyme opts
       m = T.pack $ optMeter opts
       t = optRhymeThreshold opts
       c = T.pack $ optCustomConstraints opts
+  trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
   return $ makeSpec lc r m dFiltered t c
 
 -- TODO: this should take an option (see fromOpts)
@@ -87,4 +90,12 @@ filterDict d = do
           "Singapore"
         ]
       filterText = flip subDict (not . (`elem` filterList) . text)
-  return . filterDefs . filterText . flip subXTags filterTags $ d
+  return . filterDefs . filterText . subXPOS . flip subXTags filterTags $ d
+
+filterPOSs :: [T.Text]
+filterPOSs = ["name", "prefix", "suffix", "phrase"]
+
+subXPOS :: Dictionary -> Dictionary
+subXPOS = flip subDict $ \e ->
+  not $
+    all (\s -> Dictionary.pos s `elem` filterPOSs) (definitions e)

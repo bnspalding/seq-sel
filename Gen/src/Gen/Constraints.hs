@@ -81,22 +81,11 @@ type PoemCons = [StanzaCons]
 
 type SylLoc = (Int, Int, Int) -- the [Stanza] [Line] [Syl] address of a Syl
 
--- emptyPoem :: PoemCons
--- emptyPoem = [emptyStanza]
-
-emptyStanza :: StanzaCons
-emptyStanza = [emptyLine]
-
-emptyLine :: LineCons
-emptyLine = [emptySyl]
-
-emptySyl :: SylCons
-emptySyl = ([], [])
-
 -- | makeCons generates the poem constraints from a set of options
 makeCons :: Int -> T.Text -> T.Text -> Float -> T.Text -> PoemCons
 makeCons linesN meterS rhymeS rhymeThreshold customCons =
-  let base = replicate linesN []
+  let base = [replicate linesN []] -- this is a flat set of empty lines in 1 stanza
+          -- stanza breaks must be introduced later (such as in 'withMeter')
       withMeter = addMeterScheme base meterS
       withRhyme = addRhymeScheme withMeter rhymeS rhymeThreshold
       _final = addCustomCons withRhyme customCons
@@ -107,8 +96,8 @@ makeCons linesN meterS rhymeS rhymeThreshold customCons =
 makeRhymeMap :: T.Text -> Map.Map Char Syl
 makeRhymeMap _ = Map.empty
 
-stanzaCount :: PoemCons -> Int
-stanzaCount = length
+-- stanzaCount :: PoemCons -> Int
+-- stanzaCount = length
 
 lineCount :: StanzaCons -> Int
 lineCount = length
@@ -143,52 +132,54 @@ addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
                 (makeRhymeConstraint c rThreshold)
          in toRS_recursive newP cs (stanzaI, lineI + 1)
 
+-- Because the meter scheme can fundamentally alter the structure of a poem
+-- (inserting stanza breaks into an otherwise flat set of lines), 'mergePoems'
+-- is not an appropriate tool. 'toMeterCons' must instead work over the given
+-- PoemCons
 addMeterScheme :: PoemCons -> T.Text -> PoemCons
-addMeterScheme p meterS = mergePoems p (toMeterCons p meterS)
+addMeterScheme [] = error "empty poem cons in addMeterScheme"
+addMeterScheme [stanzaCons] = toMeterCons stanzaCons
+addMeterScheme _ = error "addMeterScheme expects a single stanza (flat set of lines)"
 
-toMeterCons :: PoemCons -> T.Text -> PoemCons
-toMeterCons startingP scheme = toMC_recursive (T.unpack scheme) startingP (0, 0, 0)
+toMeterCons :: StanzaCons -> T.Text -> PoemCons
+toMeterCons startingS scheme = toMC_recursive startingS extendedScheme True []
   where
-    toMC_recursive [] p _ = p
-    toMC_recursive (c : cs) p (st, ln, sy)
-      | c == '0' =
-        toMC_recursive
-          cs
-          (addConstraintAt p (st, ln, sy) (makeMeterConstraint Unstressed))
-          (st, ln, sy + 1)
-      | c == '1' =
-        toMC_recursive
-          cs
-          (addConstraintAt p (st, ln, sy) (makeMeterConstraint Stressed))
-          (st, ln, sy + 1)
-      | c == '/' = toMC_recursive cs p (st, ln + 1, 0) -- linebreak
-      | c == 's' = toMC_recursive cs p (st + 1, 0, 0) -- stanzabreak
-      | otherwise = error $ "unknown symbol" ++ [c] ++ "in meter cons"
+    lc = lineCount startingS -- assume flat (structure comes with meter)
+        -- for now, nothing is being done to filter out double line breaks or
+        -- anything of that sort. This should be addressed in the future.
+    lineBreak = "/"
+    -- for now, stanzaBreaks flip an end-of-line switch. Consider changing this
+    -- in the future.
+    stanzaBreak = 's'
+    -- a meterScheme is split by lines, and then extended to the length of the
+    -- poem (if it is longer, it is reduced to the line length of the poem)
+    extendedScheme = take lc $ cycle $ T.splitOn lineBreak scheme
+    toMC_recursive p [] _ [] = [p]
+    toMC_recursive _ [] _ newP = newP
+    toMC_recursive [] _ _ _ = error "empty stanzaCons given, toMC_recursive"
+    toMC_recursive (pl : pls) (l : ls) isBreak newP
+      | isBreak =
+        let (newL, shouldBreak) = processL pl l
+         in toMC_recursive pls ls shouldBreak (newP ++ [[newL]])
+      | otherwise =
+        let (newL, shouldBreak) = processL pl l
+         in toMC_recursive pls ls shouldBreak (init newP ++ [last newP ++ [newL]])
+    processL oldLine mLine = (newL, shouldBreak)
+      where
+        newL = zipSyls oldLine $ genConstraint <$> T.unpack (T.filter (/= stanzaBreak) mLine)
+        shouldBreak = not $ T.null $ T.filter (== stanzaBreak) mLine
+    genConstraint c
+      | c == '0' = let (con, m) = makeMeterConstraint Unstressed in ([con], [m])
+      | c == '1' = let (con, m) = makeMeterConstraint Stressed in ([con], [m])
+      | otherwise = error $ "unknown symbol " ++ [c] ++ "in meter scheme"
 
-addConstraintAt :: PoemCons -> SylLoc -> (Constraint, SpecMod) -> PoemCons
-addConstraintAt p loc@(stanzaI, lineI, sylI) c
-  | stanzaI >= stanzaCount p = againWithAnotherStanza
-  | lineI >= lineCount (p !! stanzaI) = againWithAnotherLine
-  | sylI >= sylCount (p !! stanzaI !! lineI) = againWithAnotherSyl
-  | otherwise = addConToSyl loc p c
-  where
-    againWithAnotherStanza = addConstraintAt (addEmptyStanza p) loc c
-    againWithAnotherLine = addConstraintAt (addEmptyLine stanzaI p) loc c
-    againWithAnotherSyl = addConstraintAt (addEmptySyl stanzaI lineI p) loc c
-
-addEmptyStanza :: PoemCons -> PoemCons
-addEmptyStanza p = p ++ [emptyStanza]
-
-addEmptyLine :: Int -> PoemCons -> PoemCons
-addEmptyLine stanzaI p = replace stanzaI modifiedStanza p
-  where
-    modifiedStanza = p !! stanzaI ++ [emptyLine]
-
-addEmptySyl :: Int -> Int -> PoemCons -> PoemCons
-addEmptySyl stanzaI lineI p = replace stanzaI modifiedStanza p
-  where
-    modifiedStanza = replace lineI modifiedLine (p !! stanzaI)
-    modifiedLine = p !! stanzaI !! lineI ++ [emptySyl]
+--like zipWith, but fills in with the longer list rather than trimming to the
+--shorter
+zipSyls :: LineCons -> LineCons -> LineCons
+zipSyls [] [] = []
+zipSyls [] yl = yl
+zipSyls xl [] = xl
+zipSyls (x : xs) (y : ys) = mergeSyls x y : zipSyls xs ys
 
 addConToSyl :: SylLoc -> PoemCons -> (Constraint, SpecMod) -> PoemCons
 addConToSyl sylLoc@(stanzaI, lineI, sylI) p c
@@ -203,22 +194,8 @@ addConToSyl sylLoc@(stanzaI, lineI, sylI) p c
 mergeCons :: SylCons -> (Constraint, SpecMod) -> SylCons
 mergeCons (cs, ms) (c, m) = (c : cs, m : ms)
 
-mergePoems :: PoemCons -> PoemCons -> PoemCons
-mergePoems = mergeF mergeStanzas
-
-mergeStanzas :: StanzaCons -> StanzaCons -> StanzaCons
-mergeStanzas = mergeF mergeLines
-
-mergeLines :: LineCons -> LineCons -> LineCons
-mergeLines = mergeF mergeSyls
-
 mergeSyls :: SylCons -> SylCons -> SylCons
 mergeSyls (c1s, m1s) (c2s, m2s) = (c1s ++ c2s, m1s ++ m2s)
-
-mergeF :: (a -> a -> a) -> [a] -> [a] -> [a]
-mergeF _ [] ys = ys
-mergeF _ xs [] = xs
-mergeF f (x : xs) (y : ys) = f x y : mergeF f xs ys
 
 replace :: Int -> a -> [a] -> [a]
 replace i x xs =
@@ -266,7 +243,11 @@ badSylLoc (stanzaI, lineI, sylI) p
   | otherwise = False
 
 printPoemCons :: PoemCons -> String
-printPoemCons = show . fmap (fmap (fmap (show . length)))
+printPoemCons stanzas = concat $ showStanza <$> stanzas
+  where
+    showStanza stanza = "[st:" ++ concat (showLine <$> stanza) ++ "] "
+    showLine line = "[l:" ++ concat (showSyl <$> line) ++ "]"
+    showSyl syl = "[s:" ++ show (length (fst syl)) ++ "]"
 --TODO: constraints are not being generated properly. Make some tests for
 --creation as a starter.
 --It looks like currently, a line of 8 and a line of 6 are going, but not the
