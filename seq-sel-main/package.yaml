@@ -16,6 +16,7 @@ dependencies:
   - dictionary
   - text
   - bytestring
+  - containers
 
 executables:
   seq-sel:

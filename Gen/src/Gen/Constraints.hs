@@ -2,7 +2,7 @@
 
 -- |
 -- Module: Gen.Constraints
--- Description: poem generation
+-- Description: syllable level constraints
 -- Copyright: (c) 2019 Ben Spalding (bnspalding.com)
 -- License: CC-BY-NC
 -- Stability: experimental
@@ -25,6 +25,9 @@ module Gen.Constraints
     LineCons,
     StanzaCons,
     PoemCons,
+
+    -- * Testing
+    printPoemCons,
   )
 where
 
@@ -78,8 +81,8 @@ type PoemCons = [StanzaCons]
 
 type SylLoc = (Int, Int, Int) -- the [Stanza] [Line] [Syl] address of a Syl
 
-emptyPoem :: PoemCons
-emptyPoem = [emptyStanza]
+-- emptyPoem :: PoemCons
+-- emptyPoem = [emptyStanza]
 
 emptyStanza :: StanzaCons
 emptyStanza = [emptyLine]
@@ -96,13 +99,13 @@ makeCons linesN meterS rhymeS rhymeThreshold customCons =
   let base = replicate linesN []
       withMeter = addMeterScheme base meterS
       withRhyme = addRhymeScheme withMeter rhymeS rhymeThreshold
-      final = addCustomCons withRhyme customCons
-   in final
+      _final = addCustomCons withRhyme customCons
+   in _final
 
 -- | the rhyme map starts empty and is constructed during generation
 -- the keys (a,b,c) are built into the syllable constraints
 makeRhymeMap :: T.Text -> Map.Map Char Syl
-makeRhymeMap rhymeString = Map.empty
+makeRhymeMap _ = Map.empty
 
 stanzaCount :: PoemCons -> Int
 stanzaCount = length
@@ -116,8 +119,8 @@ sylCount = length
 totalLineCount :: PoemCons -> Int
 totalLineCount p = sum $ lineCount <$> p
 
-constraintsAt :: PoemCons -> SylLoc -> SylCons
-constraintsAt p (stanzaI, lineI, sylI) = p !! stanzaI !! lineI !! sylI
+--constraintsAt :: PoemCons -> SylLoc -> SylCons
+--constraintsAt p (stanzaI, lineI, sylI) = p !! stanzaI !! lineI !! sylI
 
 -- not currently implemented
 addCustomCons :: PoemCons -> T.Text -> PoemCons
@@ -135,7 +138,7 @@ addRhymeScheme _p rhymeS rThreshold = toRS_recursive _p rhymeSExtended (0, 0)
       | otherwise =
         let newP =
               addConToSyl
-                (stanzaI, lineI, sylCount (p !! stanzaI !! lineI))
+                (stanzaI, lineI, sylCount (p !! stanzaI !! lineI) - 1)
                 p
                 (makeRhymeConstraint c rThreshold)
          in toRS_recursive newP cs (stanzaI, lineI + 1)
@@ -188,7 +191,9 @@ addEmptySyl stanzaI lineI p = replace stanzaI modifiedStanza p
     modifiedLine = p !! stanzaI !! lineI ++ [emptySyl]
 
 addConToSyl :: SylLoc -> PoemCons -> (Constraint, SpecMod) -> PoemCons
-addConToSyl (stanzaI, lineI, sylI) p c = modifiedPoem
+addConToSyl sylLoc@(stanzaI, lineI, sylI) p c
+  | badSylLoc sylLoc p = error $ "addConToSyl badSylLoc: " ++ show sylLoc
+  | otherwise = modifiedPoem
   where
     modifiedSyl = mergeCons (p !! stanzaI !! lineI !! sylI) c
     modifiedLine = replace sylI modifiedSyl (p !! stanzaI !! lineI)
@@ -244,7 +249,7 @@ makeRhymeConstraint c rThreshold =
 
 makeMeterConstraint :: Stress -> (Constraint, SpecMod)
 makeMeterConstraint s =
-  let con syl spec = stress syl == s --does syl stress == specified stress
+  let con syl _ = stress syl == s --does syl stress == specified stress
       upd spec _ = spec -- no change to spec
    in (con, upd)
 
@@ -252,3 +257,17 @@ selectRhymeFunc :: Float -> (Syl -> Syl -> Bool)
 selectRhymeFunc rThreshold
   | rThreshold < 1.0 = \s1 s2 -> Approx.rhyme s1 s2 >= toRational rThreshold
   | otherwise = Strict.rhyme
+
+badSylLoc :: SylLoc -> PoemCons -> Bool
+badSylLoc (stanzaI, lineI, sylI) p
+  | stanzaI >= length p = True
+  | lineI >= length (p !! stanzaI) = True
+  | sylI >= length (p !! stanzaI !! lineI) = True
+  | otherwise = False
+
+printPoemCons :: PoemCons -> String
+printPoemCons = show . fmap (fmap (fmap (show . length)))
+--TODO: constraints are not being generated properly. Make some tests for
+--creation as a starter.
+--It looks like currently, a line of 8 and a line of 6 are going, but not the
+--next two lines (looks like there's three actually after, which is wrong)"

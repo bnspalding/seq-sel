@@ -19,7 +19,7 @@ module Gen
     Stanza,
 
     -- * Specifications
-    Spec,
+    Spec (..),
     makeSpec,
 
     -- * Generation
@@ -30,9 +30,8 @@ module Gen
   )
 where
 
-import Data.List
-import qualified Data.Set as Set
 import qualified Data.Text as T
+import Debug.Trace
 import Dictionary
 import Gen.Constraints
 import Sound
@@ -61,15 +60,36 @@ poem spec seqF firstWord =
       esMaybe = lookupText d firstWord
    in case esMaybe of
         Nothing -> error "the given word is not present in the dictionary"
-        Just es -> _poem spec seqF [[[head es]]]
+        Just es ->
+          let (newSpec, _, _) = applyTerm (head es) spec
+           in trace (printPoemCons (specConstraints spec)) $ _poem newSpec seqF [[[head es]]]
 
 _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- First Word Case: some special handling is required for the first word
 -- (such as filling with a previous word to get the meter right)
 -- also, need to verify that the given word does indeed exist in dict
-_poem spec seqF [[[w]]] = undefined
+-- TODO: add special handling (currently in poem above)
+-- be careful to not hit an infinite loop on the first word
+-- _poem spec seqF [[[w]]] = undefined
 -- Standard Case: add words to the poem until the spec is fully realized
-_poem spec seqF stanzas = undefined
+_poem spec seqF stanzas =
+  if isComplete spec
+    then stanzas
+    else trace (show (writePoem stanzas)) $ _poem newSpec seqF newStanzas
+  where
+    currentW = head $ wordsUsed spec
+    nextTerm = head $ filter (`checkTerm` spec) (seqF spec currentW)
+    (newSpec, isLineBreak, isStanzaBreak) = applyTerm nextTerm spec
+    currentStanza = last stanzas
+    currentLine = last currentStanza
+    newStanzas =
+      if isLineBreak
+        then
+          if isStanzaBreak
+            then stanzas ++ [[[nextTerm]]]
+            else init stanzas ++ [currentStanza ++ [[nextTerm]]]
+        else init stanzas ++ [init currentStanza ++ [currentLine ++ [nextTerm]]]
+    isComplete = null . specConstraints
 
 -- | writePoem takes a generated poem and outputs it to text.
 writePoem :: [Stanza] -> T.Text
@@ -85,7 +105,6 @@ writePoem = joinStanzas
 makeSpec :: Int -> T.Text -> T.Text -> Dictionary -> Float -> T.Text -> Spec
 makeSpec lineCount rhymeS meterS d rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
-      rm = makeRhymeMap rhymeS
    in Spec
         { specConstraints = cs,
           wordsUsed = [],
@@ -102,7 +121,7 @@ checkTerm t spec
   | null currentLine = error "The current line is zero length!"
   | length sylsT > length currentLine = False -- too long for current line
   | t `elem` wordsUsed spec = False -- enforce no repeats
-  | otherwise = checkSyls spec sylsT currentCons
+  | otherwise = trace ("checking " ++ show (text t)) $ checkSyls spec sylsT currentCons
   where
     sylsT = pronunciation t
     sCons = specConstraints spec
@@ -111,27 +130,48 @@ checkTerm t spec
 
 checkSyls :: Spec -> [Syl] -> [[Constraint]] -> Bool
 checkSyls _ [] _ = error "empty syl list in checkSyls!"
+checkSyls _ _ [] = True
 checkSyls spec [s] [cs] = and $ (\c -> c s spec) <$> cs -- this can be more clean
 checkSyls spec (s : ss) (cs : css) = checkSyls spec [s] [cs] && checkSyls spec ss css
 
 -- update the spec with the new term
-applyTerm :: Term -> Spec -> Spec
+applyTerm :: Term -> Spec -> (Spec, Bool, Bool)
 applyTerm t spec =
-  applySpecs
-    currentMods
-    sylsT
-    Spec
-      { specConstraints = trimmedCons,
-        wordsUsed = t : wordsUsed spec,
-        rhymeMap = rhymeMap spec,
-        dict = dict spec
-      }
+  trace
+    ("applying " ++ show (text t))
+    ( applySpecs
+        currentMods
+        sylsT
+        Spec
+          { specConstraints = trimmedCons,
+            wordsUsed = t : wordsUsed spec,
+            rhymeMap = rhymeMap spec,
+            dict = dict spec
+          },
+      isLineBreak,
+      isStanzaBreak
+    )
   where
     sylsT = pronunciation t
     sCons = specConstraints spec
     currentLine = head (head sCons)
     currentMods = snd <$> take (length sylsT) currentLine
-    trimmedCons = (drop (length sylsT) currentLine : tail (head sCons)) : tail sCons
+    newCurrentLine = drop (length sylsT) currentLine
+    remainingLines = tail (head sCons)
+    remainingStanzas = tail sCons
+    isLineBreak = null newCurrentLine
+    isStanzaBreak = null remainingLines
+    trimmedCons =
+      -- clear out empty lists when trimming
+      if isLineBreak
+        then
+          if trace "--- line break ---" isStanzaBreak
+            then
+              if trace "--- stanza break ---" null remainingStanzas
+                then []
+                else remainingStanzas
+            else remainingLines : remainingStanzas
+        else (newCurrentLine : remainingLines) : remainingStanzas
 
 _applySpecs :: [SpecMod] -> Syl -> Spec -> Spec
 _applySpecs (m : ms) s spec = _applySpecs ms s (m spec s)
@@ -140,3 +180,4 @@ _applySpecs [] _ spec = spec
 applySpecs :: [[SpecMod]] -> [Syl] -> Spec -> Spec
 applySpecs (ms : mss) (s : ss) spec = applySpecs mss ss (_applySpecs ms s spec)
 applySpecs [] _ spec = spec
+applySpecs _ [] _ = error "empty syl set in applySpecs"

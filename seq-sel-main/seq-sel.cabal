@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c902fe9fbf49908ba76b4802bd0e2afaa13d2d9ac1f1cdbf1bc3406a1623dd6e
+-- hash: 83394cf010093e7cbed680958c651a029153aa5bd47dc1245b6878724a8898d6
 
 name:           seq-sel
 version:        0.0
@@ -33,6 +33,7 @@ executable seq-sel
       Gen
     , base >=4.9 && <5
     , bytestring
+    , containers
     , dictionary
     , optparse-applicative
     , text
@@ -50,6 +51,7 @@ test-suite seq-sel-test
       Gen
     , base >=4.9 && <5
     , bytestring
+    , containers
     , dictionary
     , hspec
     , hspec-discover

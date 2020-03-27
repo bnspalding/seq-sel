@@ -13,6 +13,7 @@ dependencies:
   - dictionary
   - containers
   - text
+  - vector
 
 library:
   source-dirs: src
