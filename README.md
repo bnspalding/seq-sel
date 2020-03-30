@@ -15,6 +15,5 @@ behind this license is to make the code within Gen available not only for study,
 but also for modification and use in non-commercial settings.
 
 ## TODOs
-TODO: Project: constraint relaxing (avoid infinite loops)
 TODO: Project: refine dict list manually and against word lists
 TODO: Project: custom constraints
