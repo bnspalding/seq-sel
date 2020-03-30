@@ -38,6 +38,7 @@ import Dictionary
 import qualified Rhyme.Approx as Approx
 import qualified Rhyme.Strict as Strict
 import Sound
+import Sound.Stress
 
 -- | A Spec manages state during generating. It tracks words used during
 -- generation, the constraint block that is reduced throughout generation, and a
@@ -239,11 +240,15 @@ makeRhymeConstraint c rThreshold =
 makeMeterConstraint :: Stress -> (Constraint, SpecMod)
 makeMeterConstraint s =
   let con rl syl _
-        | rl /= High = stress syl == s --does syl stress == specified stress
+        | rl == High =
+          case s of
+            Stressed -> isHighStress $ stress syl
+            Unstressed -> isLowStress $ stress syl
+            _ -> error "meter constraints are binary. change before continuing"
         | rl == Medium || rl == Low =
           case s of -- only constrain stress points
-            Stressed -> stress syl `elem` [Stressed, SecondaryStress]
-            Unstressed -> True
+            Stressed -> True
+            Unstressed -> isLowStress $ stress syl
             _ -> error "meter constraints are binary. change before continuing"
         | otherwise = True
       upd spec _ = spec -- no change to spec
