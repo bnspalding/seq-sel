@@ -248,7 +248,3 @@ printPoemCons stanzas = concat $ showStanza <$> stanzas
     showStanza stanza = "[st:" ++ concat (showLine <$> stanza) ++ "] "
     showLine line = "[l:" ++ concat (showSyl <$> line) ++ "]"
     showSyl syl = "[s:" ++ show (length (fst syl)) ++ "]"
---TODO: constraints are not being generated properly. Make some tests for
---creation as a starter.
---It looks like currently, a line of 8 and a line of 6 are going, but not the
---next two lines (looks like there's three actually after, which is wrong)"
