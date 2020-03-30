@@ -239,7 +239,12 @@ makeRhymeConstraint c rThreshold =
 makeMeterConstraint :: Stress -> (Constraint, SpecMod)
 makeMeterConstraint s =
   let con rl syl _
-        | rl /= None = stress syl == s --does syl stress == specified stress
+        | rl /= High = stress syl == s --does syl stress == specified stress
+        | rl == Medium || rl == Low =
+          case s of -- only constrain stress points
+            Stressed -> stress syl `elem` [Stressed, SecondaryStress]
+            Unstressed -> True
+            _ -> error "meter constraints are binary. change before continuing"
         | otherwise = True
       upd spec _ = spec -- no change to spec
    in (con, upd)
