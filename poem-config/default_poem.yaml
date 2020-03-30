@@ -3,5 +3,5 @@ lines: 4
 rhyme: abab
 meter: "01010101/010101"
 dictFile: /Users/bnspalding/cmudict/ipa/cmu-ipa-reduced
-rhymeThreshold: 1
+rhymeThreshold: 0.85
 customCons: ""
