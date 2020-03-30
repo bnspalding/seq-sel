@@ -40,8 +40,8 @@ getSeqFunc _ = error "unknown sequence function"
 fromOpts :: Opts -> IO Spec
 fromOpts opts = do
   --d <- readDictFile $ optDictFile opts
-  d <- readDictFile
-  dFiltered <- filterDict d
+  d <- readDictFile (optDictVar opts)
+  dFiltered <- filterDict (optFilterVar opts) d
   let lc = optLines opts
       r = T.pack $ optRhyme opts
       m = T.pack $ optMeter opts
@@ -50,26 +50,15 @@ fromOpts opts = do
   trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
   return $ makeSpec lc r m dFiltered t c
 
--- TODO: this should take an option (see fromOpts)
-readDictFile :: IO Dictionary
-readDictFile = do
-  f <- getEnv "WIKTDATA_UTF8"
+readDictFile :: String -> IO Dictionary
+readDictFile dictVar = do
+  f <- getEnv dictVar
   wiktdata <- B.readFile f -- expecting .jsonl file here
   return $ makeDictionary $ rights $ readJSONL wiktdata
 
-filterDict :: Dictionary -> IO Dictionary
-filterDict d = do
-  filterFile <- getEnv "FILTERWORDS"
-  filterList <- T.lines <$> TIO.readFile filterFile
-  let filterDefs =
-        flip
-          subDict
-          ( any
-              (null . flip intersect filterList . T.words . gloss)
-              . Set.toList
-              . definitions
-          )
-      filterTags =
+filterDict :: String -> Dictionary -> IO Dictionary
+filterDict filterVar d = do
+  let filterTags =
         [ "offensive",
           "derogatory",
           "informal",
@@ -89,8 +78,21 @@ filterDict d = do
           "obsolete",
           "Singapore"
         ]
-      filterText = flip subDict (not . (`elem` filterList) . text)
-  return . filterDefs . filterText . subXPOS . flip subXTags filterTags $ d
+  if filterVar == ""
+    then return . subXPOS . flip subXTags filterTags $ d
+    else do
+      filterFile <- getEnv filterVar
+      filterList <- T.lines <$> TIO.readFile filterFile
+      let filterDefs =
+            flip
+              subDict
+              ( any
+                  (null . flip intersect filterList . T.words . gloss)
+                  . Set.toList
+                  . definitions
+              )
+          filterText = flip subDict (not . (`elem` filterList) . text)
+      return . filterDefs . filterText . subXPOS . flip subXTags filterTags $ d
 
 filterPOSs :: [T.Text]
 filterPOSs = ["name", "prefix", "suffix", "phrase"]
