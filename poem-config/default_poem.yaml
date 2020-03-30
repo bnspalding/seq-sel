@@ -1,7 +1,7 @@
 func: dict
-lines: 4
+lines: 8
 rhyme: abab
-meter: "01010101/010101"
+meter: "01010101/010101/01010101/010101s"
 dictVar: "WIKTDATA_UTF8"
 filterVar: "FILTERWORDS"
 rhymeThreshold: 0.85

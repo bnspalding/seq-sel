@@ -98,6 +98,8 @@ _poem spec seqF stanzas =
         else init stanzas ++ [newCS]
     isComplete = null . specConstraints
 
+--TODO: remove empty stanza added at end of poem
+
 -- | writePoem takes a generated poem and outputs it to text.
 writePoem :: [Stanza] -> T.Text
 writePoem = _outPoem text
