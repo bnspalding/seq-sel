@@ -28,7 +28,9 @@ run word opts = do
   spec <- fromOpts opts
   let seqFunc = getSeqFunc (optFunc opts)
       output = poem spec seqFunc (T.pack word)
+  TIO.putStrLn "Text:"
   TIO.putStrLn $ writePoem output
+  TIO.putStrLn "\nPronunciation:"
   TIO.putStrLn $ writeProns output
 
 -- Select the Sequence Function from a given string ------

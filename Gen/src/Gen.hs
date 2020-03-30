@@ -75,7 +75,7 @@ _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- Standard Case: add words to the poem until the spec is fully realized
 _poem spec seqF stanzas =
   if isComplete spec
-    then stanzas
+    then filter (/= [[]]) stanzas -- filter out empty stanzas; inelegant but simple
     else _poem newSpec seqF newStanzas
   where
     currentW = head $ wordsUsed spec
@@ -98,8 +98,6 @@ _poem spec seqF stanzas =
         else init stanzas ++ [newCS]
     isComplete = null . specConstraints
 
---TODO: remove empty stanza added at end of poem
-
 -- | writePoem takes a generated poem and outputs it to text.
 writePoem :: [Stanza] -> T.Text
 writePoem = _outPoem text
@@ -112,7 +110,7 @@ writeProns = _outPoem pronToText
     getSymbol (Sound s) = s
 
 _outPoem :: (Term -> T.Text) -> [Stanza] -> T.Text
-_outPoem f = T.intercalate "\n\n" . fmap (T.unlines . fmap (T.unwords . fmap f))
+_outPoem f = T.intercalate "\n" . fmap (T.unlines . fmap (T.unwords . fmap f))
 
 -- makeSpec generates a Spec from its different parts:
 --
