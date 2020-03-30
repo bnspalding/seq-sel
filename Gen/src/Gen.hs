@@ -35,7 +35,6 @@ where
 import Data.List (find)
 import Data.Maybe
 import qualified Data.Text as T
-import Debug.Trace
 import Dictionary
 import Gen.Constraints
 import Sound
@@ -85,9 +84,9 @@ _poem spec seqF stanzas =
     currentW = head $ wordsUsed spec
     termList = seqF spec currentW
     highRigorList = find (\t -> checkTerm t spec High) $ take 2000 termList
-    medRigorList = trace "using med" $ find (\t -> checkTerm t spec Medium) $ take 8000 termList
-    lowRigorList = trace "using low" $ find (\t -> checkTerm t spec Low) $ take 32000 termList
-    noRigorList = trace "using none" $ find (\t -> checkTerm t spec None) termList
+    medRigorList = find (\t -> checkTerm t spec Medium) $ take 8000 termList
+    lowRigorList = find (\t -> checkTerm t spec Low) $ take 32000 termList
+    noRigorList = find (\t -> checkTerm t spec None) termList
     nextTerm =
       head $ catMaybes [highRigorList, medRigorList, lowRigorList, noRigorList]
     (newSpec, isLineBreak, isStanzaBreak) = applyTerm nextTerm spec
