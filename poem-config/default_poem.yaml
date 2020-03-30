@@ -4,5 +4,5 @@ rhyme: abab
 meter: "01010101/010101/01010101/010101s"
 dictVar: "WIKTDATA_UTF8"
 filterVar: "FILTERWORDS"
-rhymeThreshold: 0.85
+rhymeThreshold: 0.9
 customCons: ""

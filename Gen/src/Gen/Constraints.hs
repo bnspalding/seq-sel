@@ -239,7 +239,7 @@ makeRhymeConstraint c rThreshold =
 makeMeterConstraint :: Stress -> (Constraint, SpecMod)
 makeMeterConstraint s =
   let con rl syl _
-        | rl == High || rl == Medium = stress syl == s --does syl stress == specified stress
+        | rl /= None = stress syl == s --does syl stress == specified stress
         | otherwise = True
       upd spec _ = spec -- no change to spec
    in (con, upd)
@@ -251,12 +251,12 @@ selectRhymeFunc rThreshold
   where
     strictFunc rl s1 s2
       | rl == High || rl == Medium = Strict.rhyme s1 s2
-      | otherwise = True
+      | otherwise = True -- Low or None
     approxFunc rl s1 s2
       | rl == High = Approx.rhyme s1 s2 >= toRational rThreshold
-      | rl == Medium = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.75)
-      | rl == Low = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.5)
-      | otherwise = True
+      | rl == Medium = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.85)
+      | rl == Low = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.7)
+      | otherwise = True -- None
 
 badSylLoc :: SylLoc -> PoemCons -> Bool
 badSylLoc (stanzaI, lineI, sylI) p
