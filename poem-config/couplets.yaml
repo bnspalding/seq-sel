@@ -1,7 +1,7 @@
 func: dict
-lines: 8
-rhyme: ababcdcd
-meter: "01010101/010101/01010101/010101s"
+lines: 10
+rhyme: aabbccddee
+meter: "0101010101/0101010101s"
 dictVar: "WIKTDATA_UTF8"
 filterVar: "FILTERWORDS"
 rhymeThreshold: 0.9
