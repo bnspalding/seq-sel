@@ -32,6 +32,8 @@ run word opts = do
   TIO.putStrLn $ writePoem output
   TIO.putStrLn "\nPronunciation:"
   TIO.putStrLn $ writeProns output
+  TIO.putStrLn "\nStress:"
+  TIO.putStrLn $ writeStress output
 
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq

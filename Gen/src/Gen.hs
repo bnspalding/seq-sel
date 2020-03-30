@@ -28,6 +28,7 @@ module Gen
     -- * Output
     writePoem,
     writeProns,
+    writeStress,
   )
 where
 
@@ -111,12 +112,28 @@ _poem spec seqF stanzas =
 writePoem :: [Stanza] -> T.Text
 writePoem = _outPoem text
 
+-- | writeProns takes a generated poem and outputs the pronunciations of its
+-- words
 writeProns :: [Stanza] -> T.Text
 writeProns = _outPoem pronToText
   where
     pronToText t = T.intercalate "." (sylToText <$> pronunciation t)
     sylToText s = T.concat $ getSymbol <$> sounds s
     getSymbol (Sound s) = s
+
+-- | writeStress takes a generated poem and outputs the stress patterns of its
+-- words
+writeStress :: [Stanza] -> T.Text
+writeStress = _outPoem stressToText
+  where
+    stressToText t = T.concat ["(", T.intercalate "," (printStress <$> pronunciation t), ")"]
+    printStress syl =
+      case stress syl of
+        Stressed -> "1"
+        SecondaryStress -> "2"
+        Unstressed -> "0"
+        ReducedStress -> "r"
+        NullStress -> "*"
 
 _outPoem :: (Term -> T.Text) -> [Stanza] -> T.Text
 _outPoem f = T.intercalate "\n" . fmap (T.unlines . fmap (T.unwords . fmap f))
