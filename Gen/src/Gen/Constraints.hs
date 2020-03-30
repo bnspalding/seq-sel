@@ -15,6 +15,7 @@
 module Gen.Constraints
   ( -- * Specifications
     Spec (..),
+    RigorLevel (..),
     makeCons,
     makeRhymeMap,
 
@@ -55,9 +56,20 @@ data Spec
         dict :: Dictionary
       }
 
+-- | RigorLevels establish several different levels of \"rigor\" at which
+-- a "Constraint" can define its operation. For example, a rhyme constraint can
+-- be specificed using different fractions of the initial rhyme threshold for
+-- the different rigor levels.
+data RigorLevel
+  = High
+  | Medium
+  | Low
+  | None
+  deriving (Eq, Ord, Show)
+
 -- | A Constraint is a function that evaluates a syllable, using state from the
 -- Spec as needed (mainly the rhymeMap)
-type Constraint = (Syl -> Spec -> Bool)
+type Constraint = (RigorLevel -> Syl -> Spec -> Bool)
 
 -- | A SpecMod is a modification to be made to the Spec. These are held as
 -- functions rather than applied immediately because a term must satisfy all of
@@ -206,11 +218,11 @@ replace i x xs =
 makeRhymeConstraint :: Char -> Float -> (Constraint, SpecMod)
 makeRhymeConstraint c rThreshold =
   let rhymeFunc = selectRhymeFunc rThreshold
-      con syl spec =
+      con rl syl spec =
         let rMapSyl = rhymeMap spec Map.!? c
          in case rMapSyl of
               Nothing -> True
-              Just syl2 -> rhymeFunc syl syl2
+              Just syl2 -> rhymeFunc rl syl syl2
       upd spec syl =
         let rMap = rhymeMap spec
          in case rMap Map.!? c of
@@ -226,14 +238,25 @@ makeRhymeConstraint c rThreshold =
 
 makeMeterConstraint :: Stress -> (Constraint, SpecMod)
 makeMeterConstraint s =
-  let con syl _ = stress syl == s --does syl stress == specified stress
+  let con rl syl _
+        | rl == High || rl == Medium = stress syl == s --does syl stress == specified stress
+        | otherwise = True
       upd spec _ = spec -- no change to spec
    in (con, upd)
 
-selectRhymeFunc :: Float -> (Syl -> Syl -> Bool)
+selectRhymeFunc :: Float -> (RigorLevel -> Syl -> Syl -> Bool)
 selectRhymeFunc rThreshold
-  | rThreshold < 1.0 = \s1 s2 -> Approx.rhyme s1 s2 >= toRational rThreshold
-  | otherwise = Strict.rhyme
+  | rThreshold < 1.0 = approxFunc
+  | otherwise = strictFunc
+  where
+    strictFunc rl s1 s2
+      | rl == High || rl == Medium = Strict.rhyme s1 s2
+      | otherwise = True
+    approxFunc rl s1 s2
+      | rl == High = Approx.rhyme s1 s2 >= toRational rThreshold
+      | rl == Medium = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.75)
+      | rl == Low = Approx.rhyme s1 s2 >= toRational (rThreshold * 0.5)
+      | otherwise = True
 
 badSylLoc :: SylLoc -> PoemCons -> Bool
 badSylLoc (stanzaI, lineI, sylI) p

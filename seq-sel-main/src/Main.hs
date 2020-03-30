@@ -97,7 +97,7 @@ filterDict filterVar d = do
       return . filterDefs . filterText . subXPOS . flip subXTags filterTags $ d
 
 filterPOSs :: [T.Text]
-filterPOSs = ["name", "prefix", "suffix", "phrase"]
+filterPOSs = ["name", "infix", "prefix", "suffix", "phrase"]
 
 subXPOS :: Dictionary -> Dictionary
 subXPOS = flip subDict $ \e ->

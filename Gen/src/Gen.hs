@@ -31,7 +31,10 @@ module Gen
   )
 where
 
+import Data.List (find)
+import Data.Maybe
 import qualified Data.Text as T
+import Debug.Trace
 import Dictionary
 import Gen.Constraints
 import Sound
@@ -79,7 +82,13 @@ _poem spec seqF stanzas =
     else _poem newSpec seqF newStanzas
   where
     currentW = head $ wordsUsed spec
-    nextTerm = head $ filter (`checkTerm` spec) (seqF spec currentW)
+    termList = seqF spec currentW
+    highRigorList = find (\t -> checkTerm t spec High) $ take 2000 termList
+    medRigorList = trace "using med" $ find (\t -> checkTerm t spec Medium) $ take 8000 termList
+    lowRigorList = trace "using low" $ find (\t -> checkTerm t spec Low) $ take 32000 termList
+    noRigorList = trace "using none" $ find (\t -> checkTerm t spec None) termList
+    nextTerm =
+      head $ catMaybes [highRigorList, medRigorList, lowRigorList, noRigorList]
     (newSpec, isLineBreak, isStanzaBreak) = applyTerm nextTerm spec
     currentStanza = last stanzas
     currentLine = last currentStanza
@@ -128,24 +137,24 @@ makeSpec lineCount rhymeS meterS d rThreshold customCons =
 -- Evaluating Terms with the Spec
 
 -- check if a term satisfies all the current front constraints
-checkTerm :: Term -> Spec -> Bool
-checkTerm t spec
+checkTerm :: Term -> Spec -> RigorLevel -> Bool
+checkTerm t spec rl
   | null sCons = error "The spec constraints are empty!"
   | null currentLine = error "The current line is zero length!"
   | length sylsT > length currentLine = False -- too long for current line
   | t `elem` wordsUsed spec = False -- enforce no repeats
-  | otherwise = checkSyls spec sylsT currentCons
+  | otherwise = checkSyls spec rl sylsT currentCons
   where
     sylsT = pronunciation t
     sCons = specConstraints spec
     currentLine = head (head sCons)
     currentCons = fst <$> take (length sylsT) currentLine
 
-checkSyls :: Spec -> [Syl] -> [[Constraint]] -> Bool
-checkSyls _ [] _ = error "empty syl list in checkSyls!"
-checkSyls _ _ [] = True
-checkSyls spec [s] [cs] = and $ (\c -> c s spec) <$> cs -- this can be more clean
-checkSyls spec (s : ss) (cs : css) = checkSyls spec [s] [cs] && checkSyls spec ss css
+checkSyls :: Spec -> RigorLevel -> [Syl] -> [[Constraint]] -> Bool
+checkSyls _ _ [] _ = error "empty syl list in checkSyls!"
+checkSyls _ _ _ [] = True
+checkSyls spec rl [s] [cs] = and $ (\c -> c rl s spec) <$> cs -- this can be more clean
+checkSyls spec rl (s : ss) (cs : css) = checkSyls spec rl [s] [cs] && checkSyls spec rl ss css
 
 -- update the spec with the new term
 applyTerm :: Term -> Spec -> (Spec, Bool, Bool)
