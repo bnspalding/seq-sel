@@ -8,18 +8,31 @@
 # the last two syllables of each line
 
 # First, expect the structure of the poem defined
-Poem: { Stanza1 } + { Couplet } # "Poem:" is like "origin" in a tracery grammar
-Stanza1: 2 [8 6] + { 2 }
+Poem: Stanza1 + Couplet # "Poem:" is like "origin" in a tracery grammar
+Stanza1: 2 [8 6] ++ 2 # "++" merges "2" into the existing stanza :: [a] ++ a
 Couplet: 2 [10]
 
 # An optional whitespace is possible between a Repeater/Address and the bracket
 
 # Then, apply patterns of constraints over the structure
 *.*.* [01] # apply iambs over everything
-1.*.!0 [ab] # ababa rhyme scheme for the first stanza
-1.!0.!0 [-r] # strip the rhyme constraint from the last line of stanza 1
-1.!0.0 ["tɪ"] # require the first syl of the last line has a "tɪ" sound
-2.*.!1 [a] # add the "a" rhyme to the second to last syllable in the couplet
-2.*.!0 [b] # add the "b" rhyme to the final syl of each line in the couplet
+1.*.!1 [ab] # ababa rhyme scheme for the first stanza
+1.!1.!1 [-r] # strip the rhyme constraint from the last line of stanza 1
+1.!1.1 ["tɪ"] # require the first syl of the last line has a "tɪ" sound
+2.*.!2 [a] # add the "a" rhyme to the second to last syllable in the couplet
+2.*.!1 [b] # add the "b" rhyme to the final syl of each line in the couplet
 
+# NOTES: "+" is sequence ("stanza 1 THEN stanza 2")
+#       "++" is merge ("stanza 1 INCLUDING line 2")
+# IMPORTANT: Indexes start counting at 1, not 0
 
+# a sequence of line nums is syntactic sugar for their "sequence" (+)
+# 2 3 4 == 2 + 3 + 4
+# 2 [8 6] == 2 [8 + 6] 
+
+# "2 [8 6]" == (8 + 6) ++ (8 + 6); i.e., repeat and merge
+# as an aside, + should have precedence over ++, so above is alt: 8 + 6 ++ 8 + 6
+
+# repeat is type <num> [a] -> a
+# however, 2 [8] is a special case. A single line length is treated as a stanza
+#     of length 1; i.e., 2 [8] == 8 + 8, NOT 8 ++ 8
