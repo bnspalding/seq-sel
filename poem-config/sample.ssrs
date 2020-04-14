@@ -1,0 +1,25 @@
+# A Sequence, Selection Rule Set (ssrs) sample
+
+# A line that begins with "#" is a comment
+
+# This example will define a first stanza that is 4 lines of
+# common meter with a line of monometer at the end,
+# followed by a couplet in iambic pentameter that rhymes a-b over
+# the last two syllables of each line
+
+# First, expect the structure of the poem defined
+Poem: { Stanza1 } + { Couplet } # "Poem:" is like "origin" in a tracery grammar
+Stanza1: 2 [8 6] + { 2 }
+Couplet: 2 [10]
+
+# An optional whitespace is possible between a Repeater/Address and the bracket
+
+# Then, apply patterns of constraints over the structure
+*.*.* [01] # apply iambs over everything
+1.*.!0 [ab] # ababa rhyme scheme for the first stanza
+1.!0.!0 [-r] # strip the rhyme constraint from the last line of stanza 1
+1.!0.0 ["tɪ"] # require the first syl of the last line has a "tɪ" sound
+2.*.!1 [a] # add the "a" rhyme to the second to last syllable in the couplet
+2.*.!0 [b] # add the "b" rhyme to the final syl of each line in the couplet
+
+
