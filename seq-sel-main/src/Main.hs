@@ -12,6 +12,7 @@ import Debug.Trace
 import Dictionary
 import Gen
 import Options
+import qualified Sequence.Dict as Dict
 import System.Environment
 import Wiktionary (makeDictionary, readJSONL)
 
@@ -37,7 +38,7 @@ run word opts = do
 
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq
-getSeqFunc "dict" = \spec e -> dropWhile (/= e) $ cycle $ toList $ dict spec
+getSeqFunc "dict" = Dict.seqFunc
 getSeqFunc "vec" = undefined
 getSeqFunc _ = error "unknown sequence function"
 
