@@ -20,4 +20,4 @@ import Spec
 -- alphabetically, using the dictionary associated with the 'Spec' and starting
 -- with a given 'Entry'
 seqFunc :: Spec -> Entry -> [Entry]
-seqFunc spec e = dropWhile (/= e) $ cycle $ toList $ dict spec
+seqFunc spec e = dropWhile (/= e) $ cycle $ toList $ dict $ resources spec

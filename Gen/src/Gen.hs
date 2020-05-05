@@ -40,6 +40,7 @@ import Selection.Constraints
 import Sequence (Seq)
 import Sound
 import Sound.Syl
+import Spec
 
 -- | A Term is a word and its surrounding information, or, in other words, a
 -- dictionary Entry
@@ -56,13 +57,15 @@ type Stanza = [Line]
 -- satisfying the constraints of the specification.
 poem :: Spec -> Seq -> T.Text -> [Stanza]
 poem spec seqF firstWord =
-  let d = dict spec
+  let res = resources spec
+      poemState = state spec
+      d = dict res
       esMaybe = lookupText d firstWord
    in case esMaybe of
         Nothing -> error "the given word is not present in the dictionary"
         Just es ->
-          let (newSpec, _, _) = applyTerm (head es) spec
-           in _poem newSpec seqF [[[head es]]]
+          let (newState, _, _) = applyTerm (head es) poemState
+           in _poem (Spec newState res) seqF [[[head es]]]
 
 _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- First Word Case: some special handling is required for the first word
@@ -73,19 +76,21 @@ _poem :: Spec -> Seq -> [Stanza] -> [Stanza]
 -- _poem spec seqF [[[w]]] = undefined
 -- Standard Case: add words to the poem until the spec is fully realized
 _poem spec seqF stanzas =
-  if isComplete spec
+  if isComplete poemState
     then filter (/= [[]]) stanzas -- filter out empty stanzas; inelegant but simple
-    else _poem newSpec seqF newStanzas
+    else _poem (Spec newState res) seqF newStanzas
   where
-    currentW = head $ wordsUsed spec
+    poemState = state spec
+    res = resources spec
+    currentW = head $ wordsUsed poemState
     termList = seqF spec currentW
-    highRigorList = find (\t -> checkTerm t spec High) $ take 2000 termList
-    medRigorList = find (\t -> checkTerm t spec Medium) $ take 8000 termList
-    lowRigorList = find (\t -> checkTerm t spec Low) $ take 32000 termList
-    noRigorList = find (\t -> checkTerm t spec None) termList
+    highRigorList = find (\t -> checkTerm t poemState High) $ take 2000 termList
+    medRigorList = find (\t -> checkTerm t poemState Medium) $ take 8000 termList
+    lowRigorList = find (\t -> checkTerm t poemState Low) $ take 32000 termList
+    noRigorList = find (\t -> checkTerm t poemState None) termList
     nextTerm =
       head $ catMaybes [highRigorList, medRigorList, lowRigorList, noRigorList]
-    (newSpec, isLineBreak, isStanzaBreak) = applyTerm nextTerm spec
+    (newState, isLineBreak, isStanzaBreak) = applyTerm nextTerm poemState
     currentStanza = last stanzas
     currentLine = last currentStanza
     newCL = currentLine ++ [nextTerm]
@@ -140,52 +145,52 @@ makeSpec :: Int -> T.Text -> T.Text -> Dictionary -> Float -> T.Text -> Spec
 makeSpec lineCount rhymeS meterS d rThreshold customCons =
   let cs = makeCons lineCount meterS rhymeS rThreshold customCons
    in Spec
-        { specConstraints = cs,
-          wordsUsed = [],
-          rhymeMap = makeRhymeMap rhymeS,
-          dict = d
-        }
+        PoemState
+          { specConstraints = cs,
+            wordsUsed = [],
+            rhymeMap = makeRhymeMap rhymeS
+          }
+        Resources {dict = d}
 
 -- Evaluating Terms with the Spec
 
 -- check if a term satisfies all the current front constraints
-checkTerm :: Term -> Spec -> RigorLevel -> Bool
-checkTerm t spec rl
+checkTerm :: Term -> PoemState -> RigorLevel -> Bool
+checkTerm t poemState rl
   | null sCons = error "The spec constraints are empty!"
   | null currentLine = error "The current line is zero length!"
   | length sylsT > length currentLine = False -- too long for current line
-  | t `elem` wordsUsed spec = False -- enforce no repeats
-  | otherwise = checkSyls spec rl sylsT currentCons
+  | t `elem` wordsUsed poemState = False -- enforce no repeats
+  | otherwise = checkSyls poemState rl sylsT currentCons
   where
     sylsT = pronunciation t
-    sCons = specConstraints spec
+    sCons = specConstraints poemState
     currentLine = head (head sCons)
     currentCons = fst <$> take (length sylsT) currentLine
 
-checkSyls :: Spec -> RigorLevel -> [Syl] -> [[Constraint]] -> Bool
+checkSyls :: PoemState -> RigorLevel -> [Syl] -> [[Constraint]] -> Bool
 checkSyls _ _ [] _ = error "empty syl list in checkSyls!"
 checkSyls _ _ _ [] = True
 checkSyls spec rl [s] [cs] = and $ (\c -> c rl s spec) <$> cs -- this can be more clean
 checkSyls spec rl (s : ss) (cs : css) = checkSyls spec rl [s] [cs] && checkSyls spec rl ss css
 
 -- update the spec with the new term
-applyTerm :: Term -> Spec -> (Spec, Bool, Bool)
-applyTerm t spec =
+applyTerm :: Term -> PoemState -> (PoemState, Bool, Bool)
+applyTerm t poemState =
   ( applySpecs
       currentMods
       sylsT
-      Spec
+      PoemState
         { specConstraints = trimmedCons,
-          wordsUsed = t : wordsUsed spec,
-          rhymeMap = rhymeMap spec,
-          dict = dict spec
+          wordsUsed = t : wordsUsed poemState,
+          rhymeMap = rhymeMap poemState
         },
     isLineBreak,
     isStanzaBreak
   )
   where
     sylsT = pronunciation t
-    sCons = specConstraints spec
+    sCons = specConstraints poemState
     currentLine = head (head sCons)
     currentMods = snd <$> take (length sylsT) currentLine
     newCurrentLine = drop (length sylsT) currentLine
@@ -205,11 +210,11 @@ applyTerm t spec =
             else remainingLines : remainingStanzas
         else (newCurrentLine : remainingLines) : remainingStanzas
 
-_applySpecs :: [SpecMod] -> Syl -> Spec -> Spec
+_applySpecs :: [StateMod] -> Syl -> PoemState -> PoemState
 _applySpecs (m : ms) s spec = _applySpecs ms s (m spec s)
 _applySpecs [] _ spec = spec
 
-applySpecs :: [[SpecMod]] -> [Syl] -> Spec -> Spec
+applySpecs :: [[StateMod]] -> [Syl] -> PoemState -> PoemState
 applySpecs (ms : mss) (s : ss) spec = applySpecs mss ss (_applySpecs ms s spec)
 applySpecs [] _ spec = spec
 applySpecs _ [] _ = error "empty syl set in applySpecs"

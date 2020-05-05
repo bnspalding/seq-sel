@@ -1,8 +1,20 @@
-module Spec (Spec (..)) where
+module Spec
+  ( Spec (..),
+    Resources (..),
+    resources,
+    state,
+  )
+where
 
-import Selection.Constraints (Spec (..))
+import Dictionary
+import Selection.Constraints (PoemState)
 
--- NOTE: The Spec is tied very tightly to Selection.Constraints. I would like to
--- disentangle it more, but for now I'm just reexporting it. There should be a
--- way to smooth out these dependencies however, such that Selection.Constraints
--- can worry only about the PoemCons, and not the entire Spec.
+newtype Resources = Resources {dict :: Dictionary}
+
+data Spec = Spec PoemState Resources
+
+resources :: Spec -> Resources
+resources (Spec _ res) = res
+
+state :: Spec -> PoemState
+state (Spec st _) = st

@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 32b4e692cb9ebf3374c6e2e58a422a25577c284efd252ab7680d374482bf3637
+-- hash: 12fef68b9cf0e37b7d1dad622b1cb5f7a30e3b1bbf2f83ef51aa08028b366796
 
 name:           Gen
 version:        0.0
@@ -36,6 +36,7 @@ library
       base >=4.9 && <5
     , containers
     , dictionary
+    , mtl
     , sound
     , text
     , vector
@@ -54,6 +55,7 @@ test-suite Gen-test
     , containers
     , dictionary
     , hspec
+    , mtl
     , sound
     , text
     , vector

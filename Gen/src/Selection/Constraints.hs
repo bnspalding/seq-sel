@@ -7,21 +7,23 @@
 -- License: CC-BY-NC
 -- Stability: experimental
 --
--- Gen.Constraints describes the Specification and constraints used in poem
--- generation. Spec is essentially a way of capturing state across the course of
+-- Gen.Constraints describes constraints and state management used in poem
+-- generation. PoemState is essentially a way of capturing state across the course of
 -- poem generation, as its componenets are updated as words are added to the
 -- poem. The specConstraints are consumed during genration, whittled away with
 -- the addition of words until the spec is fully satisfied.
 module Selection.Constraints
-  ( -- * Specifications
-    Spec (..),
-    RigorLevel (..),
+  ( -- * State Management
+    PoemState (..),
     makeCons,
     makeRhymeMap,
 
+    -- * Rigor Levels
+    RigorLevel (..),
+
     -- * Constraints
     Constraint,
-    SpecMod,
+    StateMod,
     SylCons,
     LineCons,
     StanzaCons,
@@ -40,21 +42,22 @@ import qualified Rhyme.Strict as Strict
 import Sound
 import Sound.Stress
 
--- | A Spec manages state during generating. It tracks words used during
+-- TODO: rewrite Constraints using mutable vectors
+
+-- | A PoemState manages state during generating. It tracks words used during
 -- generation, the constraint block that is reduced throughout generation, and a
 -- rhymeMap for rhyme constraints. Beyond the syllable constraints that are
--- formally managed by the Spec, it also helps to enforce certain larger-scale
+-- formally managed by the PoemState, it also helps to enforce certain larger-scale
 -- constraints, such as preventing a word that has been previously used from
 -- appearing again in the poem.
 --
 -- Gen.Constraints is largely meant to be used internally and interfaced with
 -- through Gen.
-data Spec
-  = Spec
+data PoemState
+  = PoemState
       { specConstraints :: PoemCons, -- stanza [ line [ syl [Constraint]]]
         wordsUsed :: [Entry],
-        rhymeMap :: Map.Map Char Syl,
-        dict :: Dictionary
+        rhymeMap :: Map.Map Char Syl
       }
 
 -- | RigorLevels establish several different levels of \"rigor\" at which
@@ -69,19 +72,19 @@ data RigorLevel
   deriving (Eq, Ord, Show)
 
 -- | A Constraint is a function that evaluates a syllable, using state from the
--- Spec as needed (mainly the rhymeMap)
-type Constraint = (RigorLevel -> Syl -> Spec -> Bool)
+-- PoemState as needed (mainly the rhymeMap)
+type Constraint = (RigorLevel -> Syl -> PoemState -> Bool)
 
--- | A SpecMod is a modification to be made to the Spec. These are held as
+-- | A StateMod is a modification to be made to the PoemState. These are held as
 -- functions rather than applied immediately because a term must satisfy all of
 -- its constraints before being applied.
-type SpecMod = (Spec -> Syl -> Spec)
+type StateMod = (PoemState -> Syl -> PoemState)
 
 -- | each syllable has both a set of constraints, and a set of
 -- spec modifications to be run when an entry satisifies those constraints
 -- this allows for modifying the rhyme scheme when an entry is selected
 -- to an empty rhyme constraint.
-type SylCons = ([Constraint], [SpecMod])
+type SylCons = ([Constraint], [StateMod])
 
 -- | LineCons are a list of SylCons
 type LineCons = [SylCons]
@@ -194,7 +197,7 @@ zipSyls [] yl = yl
 zipSyls xl [] = xl
 zipSyls (x : xs) (y : ys) = mergeSyls x y : zipSyls xs ys
 
-addConToSyl :: SylLoc -> PoemCons -> (Constraint, SpecMod) -> PoemCons
+addConToSyl :: SylLoc -> PoemCons -> (Constraint, StateMod) -> PoemCons
 addConToSyl sylLoc@(stanzaI, lineI, sylI) p c
   | badSylLoc sylLoc p = error $ "addConToSyl badSylLoc: " ++ show sylLoc
   | otherwise = modifiedPoem
@@ -204,7 +207,7 @@ addConToSyl sylLoc@(stanzaI, lineI, sylI) p c
     modifiedStanza = replace lineI modifiedLine (p !! stanzaI)
     modifiedPoem = replace stanzaI modifiedStanza p
 
-mergeCons :: SylCons -> (Constraint, SpecMod) -> SylCons
+mergeCons :: SylCons -> (Constraint, StateMod) -> SylCons
 mergeCons (cs, ms) (c, m) = (c : cs, m : ms)
 
 mergeSyls :: SylCons -> SylCons -> SylCons
@@ -216,7 +219,7 @@ replace i x xs =
     (before, []) -> before ++ [x]
     (before, _ : after) -> before ++ [x] ++ after
 
-makeRhymeConstraint :: Char -> Float -> (Constraint, SpecMod)
+makeRhymeConstraint :: Char -> Float -> (Constraint, StateMod)
 makeRhymeConstraint c rThreshold =
   let rhymeFunc = selectRhymeFunc rThreshold
       con rl syl spec =
@@ -228,16 +231,15 @@ makeRhymeConstraint c rThreshold =
         let rMap = rhymeMap spec
          in case rMap Map.!? c of
               Nothing ->
-                Spec
+                PoemState
                   { rhymeMap = Map.insert c syl rMap,
                     specConstraints = specConstraints spec,
-                    dict = dict spec,
                     wordsUsed = wordsUsed spec
                   }
               Just _ -> spec
    in (con, upd)
 
-makeMeterConstraint :: Stress -> (Constraint, SpecMod)
+makeMeterConstraint :: Stress -> (Constraint, StateMod)
 makeMeterConstraint s =
   let con rl syl _
         | rl == High =
