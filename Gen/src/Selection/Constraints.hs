@@ -12,7 +12,7 @@
 -- poem generation, as its componenets are updated as words are added to the
 -- poem. The specConstraints are consumed during genration, whittled away with
 -- the addition of words until the spec is fully satisfied.
-module Gen.Constraints
+module Selection.Constraints
   ( -- * Specifications
     Spec (..),
     RigorLevel (..),

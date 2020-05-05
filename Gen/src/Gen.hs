@@ -36,7 +36,7 @@ import Data.List (find)
 import Data.Maybe
 import qualified Data.Text as T
 import Dictionary
-import Gen.Constraints
+import Selection.Constraints
 import Sound
 import Sound.Syl
 
