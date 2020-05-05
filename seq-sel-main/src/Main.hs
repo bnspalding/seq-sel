@@ -11,7 +11,7 @@ import qualified Data.Text.IO as TIO
 import Debug.Trace
 import Dictionary
 import Gen
-import OptionsParsing
+import Options
 import System.Environment
 import Wiktionary (makeDictionary, readJSONL)
 

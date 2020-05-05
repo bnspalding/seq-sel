@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module OptionsParsing
+module Options
   ( Opts (..),
     OptionType (..),
     Input (..),
