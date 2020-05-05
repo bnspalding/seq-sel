@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 19effadbcab3f3dd64469081ea740868c4d61abc1649b8df67e357e6b8054312
+-- hash: 32b4e692cb9ebf3374c6e2e58a422a25577c284efd252ab7680d374482bf3637
 
 name:           Gen
 version:        0.0
@@ -26,6 +26,7 @@ library
       Selection.SSRS
       Sequence
       Sequence.Dict
+      Sequence.Vec
       Spec
   other-modules:
       Paths_Gen

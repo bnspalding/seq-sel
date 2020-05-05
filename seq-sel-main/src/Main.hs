@@ -13,6 +13,7 @@ import Dictionary
 import Gen
 import Options
 import qualified Sequence.Dict as Dict
+import qualified Sequence.Vec as Vec
 import System.Environment
 import Wiktionary (makeDictionary, readJSONL)
 
@@ -39,7 +40,7 @@ run word opts = do
 -- Select the Sequence Function from a given string ------
 getSeqFunc :: String -> Seq
 getSeqFunc "dict" = Dict.seqFunc
-getSeqFunc "vec" = undefined
+getSeqFunc "vec" = Vec.seqFunc
 getSeqFunc _ = error "unknown sequence function"
 
 fromOpts :: Opts -> IO Spec
