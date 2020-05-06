@@ -36,26 +36,17 @@ import Data.List (find)
 import Data.Maybe
 import qualified Data.Text as T
 import Dictionary
+import Poem (Line, Poem, Stanza, Term)
 import Selection.Constraints
 import Sequence (Seq)
 import Sound
 import Sound.Syl
 import Spec
 
--- | A Term is a word and its surrounding information, or, in other words, a
--- dictionary Entry
-type Term = Entry
-
--- | A Line (as in a line of the output poem) is simply a list of Terms
-type Line = [Term]
-
--- | A Stanza (as in a stanza of the output poem) is a list (grouping) of Lines
-type Stanza = [Line]
-
 -- | poem is the primary generation function. Given a specification, a sequence
 -- function, and a starting word, it generates a poem from the sequence
 -- satisfying the constraints of the specification.
-poem :: Spec -> Seq -> T.Text -> [Stanza]
+poem :: Spec -> Seq -> T.Text -> Poem
 poem spec seqF firstWord =
   let res = resources spec
       poemState = state spec
@@ -67,7 +58,7 @@ poem spec seqF firstWord =
           let (newState, _, _) = applyTerm (head es) poemState
            in _poem (Spec newState res) seqF [[[head es]]]
 
-_poem :: Spec -> Seq -> [Stanza] -> [Stanza]
+_poem :: Spec -> Seq -> [Stanza] -> Poem
 -- First Word Case: some special handling is required for the first word
 -- (such as filling with a previous word to get the meter right)
 -- also, need to verify that the given word does indeed exist in dict
@@ -109,12 +100,12 @@ _poem spec seqF stanzas =
     isComplete = null . specConstraints
 
 -- | writePoem takes a generated poem and outputs it to text.
-writePoem :: [Stanza] -> T.Text
+writePoem :: Poem -> T.Text
 writePoem = _outPoem text
 
 -- | writeProns takes a generated poem and outputs the pronunciations of its
 -- words
-writeProns :: [Stanza] -> T.Text
+writeProns :: Poem -> T.Text
 writeProns = _outPoem pronToText
   where
     pronToText t = T.intercalate "." (sylToText <$> pronunciation t)
@@ -123,7 +114,7 @@ writeProns = _outPoem pronToText
 
 -- | writeStress takes a generated poem and outputs the stress patterns of its
 -- words
-writeStress :: [Stanza] -> T.Text
+writeStress :: Poem -> T.Text
 writeStress = _outPoem stressToText
   where
     stressToText t = T.concat ["(", T.intercalate "," (printStress <$> pronunciation t), ")"]
@@ -135,7 +126,7 @@ writeStress = _outPoem stressToText
         ReducedStress -> "r"
         NullStress -> "*"
 
-_outPoem :: (Term -> T.Text) -> [Stanza] -> T.Text
+_outPoem :: (Term -> T.Text) -> Poem -> T.Text
 _outPoem f = T.intercalate "\n" . fmap (T.unlines . fmap (T.unwords . fmap f))
 
 -- makeSpec generates a Spec from its different parts:

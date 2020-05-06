@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 12fef68b9cf0e37b7d1dad622b1cb5f7a30e3b1bbf2f83ef51aa08028b366796
+-- hash: 9645dc31707edf0f206adacc34f91979a9d97b2991830e9c0e9f57e97ee7eb7e
 
 name:           Gen
 version:        0.0
@@ -21,6 +21,7 @@ library
   exposed-modules:
       Annotations
       Gen
+      Poem
       Selection.Constraints
       Selection.Construction
       Selection.SSRS
