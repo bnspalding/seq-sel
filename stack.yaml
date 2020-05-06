@@ -21,4 +21,4 @@ extra-deps:
   - github: bnspalding/sound
     commit: 8dd3ce9eec7f566522bfe3b08be61f1f5c1d6de5
   - github: bnspalding/dictionary
-    commit: d7e52a679ae5f254acb08cb105e79349f86dafab
+    commit: 6156812bd760bedc257d478a50282001ca44acdf
