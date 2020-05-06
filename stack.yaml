@@ -19,6 +19,6 @@ rebuild-ghc-options: true
 extra-deps:
   - text-replace-0.0.0.4@sha256:88800aba160dfb512cf43b24063170d34900e1646ad21f28715a22679f42ae15,1738
   - github: bnspalding/sound
-    commit: 5b298c3ff77e381b80fa7ba8c9a1240c06ee1f46
+    commit: 8dd3ce9eec7f566522bfe3b08be61f1f5c1d6de5
   - github: bnspalding/dictionary
     commit: d7e52a679ae5f254acb08cb105e79349f86dafab
