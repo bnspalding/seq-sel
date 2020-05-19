@@ -38,6 +38,7 @@ import qualified Data.Text as T
 import Dictionary
 import Poem (Line, Poem, Stanza, Term)
 import Selection.Constraints
+import Selection.Construction
 import Sequence (Seq)
 import Sound
 import Sound.Syl
