@@ -47,7 +47,7 @@ fromOpts :: Opts -> IO Spec
 fromOpts opts = do
   --d <- readDictFile $ optDictFile opts
   d <- readDictFile (optDictVar opts)
-  dFiltered <- filterDict (optFilterVar opts) d
+  dFiltered <- filterDict (optFilterVar opts) d >>= subList
   let lc = optLines opts
       r = T.pack $ optRhyme opts
       m = T.pack $ optMeter opts
@@ -107,3 +107,9 @@ subXPOS :: Dictionary -> Dictionary
 subXPOS = flip subDict $ \e ->
   not $
     all (\s -> Dictionary.pos s `elem` filterPOSs) (definitions e)
+
+subList :: Dictionary -> IO Dictionary
+subList d = do
+  wordListFile <- getEnv "MYLEX"
+  wordList <- T.lines <$> TIO.readFile wordListFile
+  return $ subDict d (\e -> Dictionary.text e `elem` wordList)
