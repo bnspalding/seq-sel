@@ -33,16 +33,20 @@ data OptionType
 
 data Input
   = Input String OptionType
+  | GenerateDict
 
 -- Flag Parser info -----------------------------------
 optsParser :: ParserInfo Input
 optsParser =
   info
-    (helper <*> versionOption <*> parseInput)
+    (helper <*> versionOption <*> (parseInput <|> parseGenDict))
     (fullDesc <> header "Sequence, Selection - program description")
 
 versionOption :: Parser (a -> a)
 versionOption = infoOption "0.0" (long "version" <> help "Show version")
+
+parseGenDict :: Parser Input
+parseGenDict = flag' GenerateDict (long "generate-dict")
 
 parseInput :: Parser Input
 parseInput = Input <$> parseWord <*> (parseFile <|> parseFlags)

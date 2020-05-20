@@ -10,6 +10,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Debug.Trace
 import Dictionary
+import DictionaryIO
 import Gen
 import Options
 import qualified Sequence.Dict as Dict
@@ -20,10 +21,13 @@ import Wiktionary (makeDictionary, readJSONL)
 -- Main Execution ---------------------------------
 main :: IO ()
 main = do
-  (Input word optType) <- execParser optsParser
-  case optType of
-    FromFile filename -> run word =<< readConfig filename
-    FromFlags opts -> run word opts
+  i <- execParser optsParser
+  case i of
+    (Input word optType) ->
+      case optType of
+        FromFile filename -> run word =<< readConfig filename
+        FromFlags opts -> run word opts
+    (GenerateDict) -> generateDictionary
 
 run :: String -> Opts -> IO ()
 run word opts = do
@@ -55,6 +59,14 @@ fromOpts opts = do
       c = T.pack $ optCustomConstraints opts
   trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
   return $ makeSpec lc r m dFiltered t c
+
+generateDictionary :: IO ()
+generateDictionary = do
+  d <- readDictFile "WIKTDATA_UTF8"
+  dFiltered <- filterDict "FILTERWORDS" d >>= subList
+  trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
+  trace "writing dictionary to data/localDict.jsonl" (return ())
+  writeDictionary "data/localDict.jsonl" dFiltered
 
 readDictFile :: String -> IO Dictionary
 readDictFile dictVar = do
