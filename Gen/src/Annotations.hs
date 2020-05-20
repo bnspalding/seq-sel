@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Annotations where
 
 import qualified Data.Set as Set
@@ -20,7 +18,7 @@ data Annotation
 -- entries of a poem.
 mkAnnotationIPA :: Poem -> Annotation
 mkAnnotationIPA =
-  IPA . fmap (fmap (fmap (T.intercalate "." . symbols . pronunciation)))
+  IPA . fmap (fmap (fmap (symbols . pronunciation)))
 
 -- NOTE: It may make sense to change the way that Word.symbols (from Sound)
 -- works to include stress and syllable breaks more clearly
