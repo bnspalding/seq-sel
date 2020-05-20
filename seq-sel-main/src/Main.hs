@@ -27,7 +27,7 @@ main = do
       case optType of
         FromFile filename -> run word =<< readConfig filename
         FromFlags opts -> run word opts
-    (GenerateDict) -> generateDictionary
+    GenerateDict -> generateDictionary
 
 run :: String -> Opts -> IO ()
 run word opts = do
@@ -49,30 +49,39 @@ getSeqFunc _ = error "unknown sequence function"
 
 fromOpts :: Opts -> IO Spec
 fromOpts opts = do
-  --d <- readDictFile $ optDictFile opts
-  d <- readDictFile (optDictVar opts)
-  dFiltered <- filterDict (optFilterVar opts) d >>= subList
+  d <-
+    if optDictVar opts == "local"
+      then readDictionary "./data/localDict.jsonl"
+      else
+        readWiktVar (optDictVar opts)
+          >>= filterDict (optFilterVar opts)
+          >>= subList
   let lc = optLines opts
       r = T.pack $ optRhyme opts
       m = T.pack $ optMeter opts
       t = optRhymeThreshold opts
       c = T.pack $ optCustomConstraints opts
-  trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
-  return $ makeSpec lc r m dFiltered t c
+  trace ("filtered dictionary size is: " ++ show (size d)) (return ())
+  return $ makeSpec lc r m d t c
+
+-- TODO: the re-opened local dictionary appears to be smaller than when written
+-- Check for what if falling through the cracks and fix it
 
 generateDictionary :: IO ()
 generateDictionary = do
-  d <- readDictFile "WIKTDATA_UTF8"
+  d <- readWiktVar "WIKTDATA_UTF8"
   dFiltered <- filterDict "FILTERWORDS" d >>= subList
   trace ("filtered dictionary size is: " ++ show (size dFiltered)) (return ())
   trace "writing dictionary to data/localDict.jsonl" (return ())
   writeDictionary "data/localDict.jsonl" dFiltered
 
-readDictFile :: String -> IO Dictionary
-readDictFile dictVar = do
-  f <- getEnv dictVar
+readWiktFile :: String -> IO Dictionary
+readWiktFile f = do
   wiktdata <- B.readFile f -- expecting .jsonl file here
   return $ makeDictionary $ rights $ readJSONL wiktdata
+
+readWiktVar :: String -> IO Dictionary
+readWiktVar dictVar = getEnv dictVar >>= readWiktFile
 
 filterDict :: String -> Dictionary -> IO Dictionary
 filterDict filterVar d = do

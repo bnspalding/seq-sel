@@ -2,7 +2,7 @@ func: dict
 lines: 14
 rhyme: ababcdcdefefgg
 meter: "01/01/01/01s/01/01/01/01s/01/01/01/01s/01/01"
-dictVar: "WIKTDATA_UTF8"
+dictVar: "local"
 filterVar: "FILTERWORDS"
 rhymeThreshold: 0.9
 customCons: ""
