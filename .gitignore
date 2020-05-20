@@ -1,4 +1,5 @@
 .vscode/
 .stack-work/
 output/
+data/
 *.lock
