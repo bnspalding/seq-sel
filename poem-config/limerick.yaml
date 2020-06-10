@@ -1,0 +1,8 @@
+func: dict
+lines: 5
+rhyme: aabba
+meter: "01001001/01001001/01001/01001/01001001"
+dictVar: "local"
+filterVar: "FILTERWORDS"
+rhymeThreshold: 0.9
+customCons: ""
